@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -6,24 +7,20 @@ public class PlayerToken : MonoBehaviour
     public static PlayerToken Instance { get; private set; }
 
     public int CurrentTile { get; private set; }
-    public int LoopCount { get; private set; }
+
+    public event Action<BoardTile> OnLandedOnTile;
 
     const float StepDuration = 0.18f;
-
-    SpriteRenderer _sr;
 
     void Awake()
     {
         Instance = this;
-        _sr = gameObject.AddComponent<SpriteRenderer>();
-        _sr.sprite = BuildCircleSprite(20, new Color(1f, 0.85f, 0.1f));
-        _sr.sortingOrder = 60;
+        var sr = gameObject.AddComponent<SpriteRenderer>();
+        sr.sprite = BuildCircleSprite(20, new Color(1f, 0.85f, 0.1f));
+        sr.sortingOrder = 60;
     }
 
-    void Start()
-    {
-        PlaceOnTile(0);
-    }
+    void Start() => PlaceOnTile(0);
 
     public void PlaceOnTile(int index)
     {
@@ -31,11 +28,10 @@ public class PlayerToken : MonoBehaviour
         transform.position = TileWorldPos(index);
     }
 
-    public void AddLoop() => LoopCount++;
-
     public IEnumerator MoveSteps(int steps)
     {
         int tileCount = BoardGenerator.Instance.Tiles.Count;
+
         for (int i = 0; i < steps; i++)
         {
             int next = CurrentTile + 1;
@@ -47,18 +43,24 @@ public class PlayerToken : MonoBehaviour
             CurrentTile = next;
 
             Vector3 from = transform.position;
-            Vector3 to = TileWorldPos(next);
+            Vector3 to   = TileWorldPos(next);
             float t = 0f;
             while (t < StepDuration)
             {
                 t += Time.deltaTime;
-                transform.position = Vector3.Lerp(from, to, Mathf.SmoothStep(0f, 1f, t / StepDuration));
+                transform.position = Vector3.Lerp(from, to,
+                    Mathf.SmoothStep(0f, 1f, t / StepDuration));
                 yield return null;
             }
             transform.position = to;
 
             BoardGenerator.Instance.Tiles[next].Highlight();
-            yield return new WaitForSeconds(0.04f);
+
+            // Fire landing event only on the final tile
+            if (i == steps - 1)
+                OnLandedOnTile?.Invoke(BoardGenerator.Instance.Tiles[next]);
+            else
+                yield return new WaitForSeconds(0.04f);
         }
     }
 
@@ -84,7 +86,8 @@ public class PlayerToken : MonoBehaviour
             if (d <= radius - 1.5f)
                 px[y * sz + x] = color;
             else if (d <= radius)
-                px[y * sz + x] = Color.Lerp(color, Color.clear, (d - (radius - 1.5f)) / 1.5f);
+                px[y * sz + x] = Color.Lerp(color, Color.clear,
+                    (d - (radius - 1.5f)) / 1.5f);
             else
                 px[y * sz + x] = Color.clear;
         }

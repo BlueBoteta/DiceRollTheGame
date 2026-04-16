@@ -10,9 +10,9 @@ public class GameManager : MonoBehaviour
 
     public int LoopCount { get; private set; }
 
-    // Subscribe to these for future systems (tile changes, boss fights, etc.)
-    public event Action<int> OnLoopCompleted;   // fires every loop, passes new count
-    public event Action<int> OnBossFightReady;  // fires every N loops, passes loop count
+    public event Action<int>       OnLoopCompleted;    // every loop
+    public event Action<int>       OnBossFightReady;   // every N loops
+    public event Action<TileType>  OnTileLanded;       // every landing
 
     void Awake()
     {
@@ -20,11 +20,21 @@ public class GameManager : MonoBehaviour
         Instance = this;
     }
 
+    void OnEnable()
+    {
+        // Hook into player landing once PlayerToken exists (called after Awake ordering)
+    }
+
+    // Called by PlayerToken after it finishes moving
+    public void HandleTileLanding(BoardTile tile)
+    {
+        OnTileLanded?.Invoke(tile.tileType);
+    }
+
     public void RegisterLoop()
     {
         LoopCount++;
         OnLoopCompleted?.Invoke(LoopCount);
-
         if (LoopCount % loopsPerBossFight == 0)
             OnBossFightReady?.Invoke(LoopCount);
     }
