@@ -56,7 +56,7 @@ public class BoardGenerator : MonoBehaviour
             BoardTile tile = tileGO.AddComponent<BoardTile>();
             tile.pathIndex = i;
             tile.gridPos = gp;
-            if (isStart) tile.tileType = TileType.Normal; // mark as start via color
+            tile.SetBaseColor(isStart ? startTileColor : tileColor);
             Tiles.Add(tile);
         }
     }

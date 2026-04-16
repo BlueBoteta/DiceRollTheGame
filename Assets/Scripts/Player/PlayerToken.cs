@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class PlayerToken : MonoBehaviour
@@ -6,6 +7,8 @@ public class PlayerToken : MonoBehaviour
 
     public int CurrentTile { get; private set; }
     public int LoopCount { get; private set; }
+
+    const float StepDuration = 0.18f;
 
     SpriteRenderer _sr;
 
@@ -30,10 +33,39 @@ public class PlayerToken : MonoBehaviour
 
     public void AddLoop() => LoopCount++;
 
+    public IEnumerator MoveSteps(int steps)
+    {
+        int tileCount = BoardGenerator.Instance.Tiles.Count;
+        for (int i = 0; i < steps; i++)
+        {
+            int next = CurrentTile + 1;
+            if (next >= tileCount)
+            {
+                LoopCount++;
+                next = 0;
+            }
+            CurrentTile = next;
+
+            Vector3 from = transform.position;
+            Vector3 to = TileWorldPos(next);
+            float t = 0f;
+            while (t < StepDuration)
+            {
+                t += Time.deltaTime;
+                transform.position = Vector3.Lerp(from, to, Mathf.SmoothStep(0f, 1f, t / StepDuration));
+                yield return null;
+            }
+            transform.position = to;
+
+            BoardGenerator.Instance.Tiles[next].Highlight();
+            yield return new WaitForSeconds(0.04f);
+        }
+    }
+
     Vector3 TileWorldPos(int index)
     {
         Vector3 p = BoardGenerator.Instance.Tiles[index].transform.position;
-        p.y += 0.18f; // sit slightly above tile surface
+        p.y += 0.18f;
         return p;
     }
 

@@ -12,7 +12,16 @@ public class GameUI : MonoBehaviour
 
     void Awake()
     {
+        EnsureEventSystem();
         BuildUI();
+    }
+
+    void EnsureEventSystem()
+    {
+        if (FindObjectOfType<UnityEngine.EventSystems.EventSystem>() != null) return;
+        var esGO = new GameObject("EventSystem");
+        esGO.AddComponent<UnityEngine.EventSystems.EventSystem>();
+        esGO.AddComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();
     }
 
     void BuildUI()
@@ -130,21 +139,11 @@ public class GameUI : MonoBehaviour
 
         yield return new WaitForSeconds(0.3f);
 
-        // Move player
+        // Move player step by step
         if (PlayerToken.Instance != null)
-        {
-            int total = die1 + die2;
-            int tileCount = BoardGenerator.Instance.Tiles.Count;
-            int next = PlayerToken.Instance.CurrentTile + total;
-            if (next >= tileCount)
-            {
-                PlayerToken.Instance.AddLoop();
-                next -= tileCount;
-            }
-            PlayerToken.Instance.PlaceOnTile(next);
-        }
+            yield return StartCoroutine(PlayerToken.Instance.MoveSteps(die1 + die2));
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.3f);
 
         _die1Text.color = Color.white;
         _die2Text.color = Color.white;
