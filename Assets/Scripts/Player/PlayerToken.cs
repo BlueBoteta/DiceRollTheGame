@@ -28,6 +28,8 @@ public class PlayerToken : MonoBehaviour
         transform.position = TileWorldPos(index);
     }
 
+    public void AddLoop() => LoopCount++;
+
     Vector3 TileWorldPos(int index)
     {
         Vector3 p = BoardGenerator.Instance.Tiles[index].transform.position;
