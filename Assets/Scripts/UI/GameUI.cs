@@ -6,6 +6,7 @@ public class GameUI : MonoBehaviour
 {
     Text _die1Text;
     Text _die2Text;
+    Text _sumText;
     Button _rollButton;
     bool _rolling;
 
@@ -31,7 +32,7 @@ public class GameUI : MonoBehaviour
         var panelImg = panel.gameObject.AddComponent<Image>();
         panelImg.color = new Color(0.08f, 0.08f, 0.12f, 0.85f);
         Anchor(panel, new Vector2(1, 0), new Vector2(1, 0), new Vector2(1, 0),
-               new Vector2(-20, 20), new Vector2(340, 180));
+               new Vector2(-20, 20), new Vector2(340, 225));
 
         // Dice display row
         var die1GO = MakeRect("Die1", panel);
@@ -53,6 +54,18 @@ public class GameUI : MonoBehaviour
         StyleDieText(_die2Text, "?");
         Anchor(die2GO, new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(1, 0.5f),
                new Vector2(-30, 20), new Vector2(100, 100));
+
+        // Sum label
+        var sumGO = MakeRect("Sum", panel);
+        _sumText = sumGO.gameObject.AddComponent<Text>();
+        _sumText.text = "";
+        _sumText.alignment = TextAnchor.MiddleCenter;
+        _sumText.fontSize = 26;
+        _sumText.fontStyle = FontStyle.Bold;
+        _sumText.color = new Color(1f, 0.85f, 0.1f);
+        _sumText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        Anchor(sumGO, new Vector2(0, 0), new Vector2(1, 0), new Vector2(0.5f, 0),
+               new Vector2(0, 68), new Vector2(0, 36));
 
         // Roll button
         var btnGO = MakeRect("RollButton", panel);
@@ -85,6 +98,8 @@ public class GameUI : MonoBehaviour
         _rolling = true;
         _rollButton.interactable = false;
 
+        _sumText.text = "";
+
         // Spin animation — flash random numbers for 1 second
         float elapsed = 0f;
         float duration = 1f;
@@ -111,6 +126,7 @@ public class GameUI : MonoBehaviour
         _die2Text.text = die2.ToString();
         _die1Text.color = new Color(1f, 0.85f, 0.1f);
         _die2Text.color = new Color(1f, 0.85f, 0.1f);
+        _sumText.text = "Total: " + (die1 + die2);
 
         yield return new WaitForSeconds(0.3f);
 
