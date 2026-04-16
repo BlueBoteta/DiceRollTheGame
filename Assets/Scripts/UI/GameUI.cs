@@ -7,6 +7,7 @@ public class GameUI : MonoBehaviour
     Text _die1Text;
     Text _die2Text;
     Text _sumText;
+    Text _loopText;
     Button _rollButton;
     bool _rolling;
 
@@ -14,6 +15,20 @@ public class GameUI : MonoBehaviour
     {
         EnsureEventSystem();
         BuildUI();
+        if (GameManager.Instance != null)
+            GameManager.Instance.OnLoopCompleted += UpdateLoopDisplay;
+    }
+
+    void OnDestroy()
+    {
+        if (GameManager.Instance != null)
+            GameManager.Instance.OnLoopCompleted -= UpdateLoopDisplay;
+    }
+
+    void UpdateLoopDisplay(int count)
+    {
+        if (_loopText != null)
+            _loopText.text = "Lap  " + count;
     }
 
     void EnsureEventSystem()
@@ -42,6 +57,17 @@ public class GameUI : MonoBehaviour
         panelImg.color = new Color(0.08f, 0.08f, 0.12f, 0.85f);
         Anchor(panel, new Vector2(1, 0), new Vector2(1, 0), new Vector2(1, 0),
                new Vector2(-20, 20), new Vector2(340, 225));
+
+        // Loop counter (top of panel)
+        var loopGO = MakeRect("LoopCounter", panel);
+        _loopText = loopGO.gameObject.AddComponent<Text>();
+        _loopText.text = "Lap  0";
+        _loopText.alignment = TextAnchor.MiddleCenter;
+        _loopText.fontSize = 22;
+        _loopText.color = new Color(0.6f, 0.9f, 1f);
+        _loopText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        Anchor(loopGO, new Vector2(0, 1), new Vector2(1, 1), new Vector2(0.5f, 1),
+               new Vector2(0, -4), new Vector2(0, 30));
 
         // Dice display row
         var die1GO = MakeRect("Die1", panel);

@@ -41,7 +41,7 @@ public class PlayerToken : MonoBehaviour
             int next = CurrentTile + 1;
             if (next >= tileCount)
             {
-                LoopCount++;
+                GameManager.Instance?.RegisterLoop();
                 next = 0;
             }
             CurrentTile = next;

@@ -14,6 +14,7 @@ public class BoardGenerator : MonoBehaviour
     public Color tileColor = new Color(0.22f, 0.22f, 0.26f, 1f);
     public Color tileOutlineColor = new Color(0.45f, 0.45f, 0.55f, 1f);
     public Color startTileColor = new Color(0.15f, 0.45f, 0.25f, 1f);
+    public Color tileHighlightColor = new Color(1f, 0.85f, 0.2f, 1f);
 
     public List<BoardTile> Tiles { get; } = new List<BoardTile>();
 

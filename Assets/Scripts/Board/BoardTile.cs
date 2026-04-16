@@ -34,7 +34,9 @@ public class BoardTile : MonoBehaviour
 
     IEnumerator FlashRoutine()
     {
-        Color flash = new Color(1f, 0.85f, 0.2f);
+        Color flash = BoardGenerator.Instance != null
+            ? BoardGenerator.Instance.tileHighlightColor
+            : new Color(1f, 0.85f, 0.2f);
         float duration = 0.4f;
         float t = 0f;
         while (t < duration)
