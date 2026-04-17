@@ -563,10 +563,10 @@ MonoBehaviour:
   combatTileColor: {r: 0.45, g: 0.1, b: 0.1, a: 1}
   lootTileColor: {r: 0.35, g: 0.28, b: 0.08, a: 1}
   bossTileColor: {r: 0.3, g: 0.05, b: 0.35, a: 1}
+  storyTileColor: {r: 0.1, g: 0.25, b: 0.35, a: 1}
   tileHighlightColor: {r: 0.19999999, g: 1, b: 0.91987956, a: 0.41960785}
   combatChance: 40
   lootChance: 30
-  bossTileIndex: 27
 --- !u!4 &1051646818
 Transform:
   m_ObjectHideFlags: 0
