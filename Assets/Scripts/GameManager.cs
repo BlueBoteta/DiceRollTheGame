@@ -25,10 +25,30 @@ public class GameManager : MonoBehaviour
         // Hook into player landing once PlayerToken exists (called after Awake ordering)
     }
 
+    public bool BossFightPending { get; private set; }
+
     // Called by PlayerToken after it finishes moving
     public void HandleTileLanding(BoardTile tile)
     {
         OnTileLanded?.Invoke(tile.tileType);
+        ApplyTileEffect(tile.tileType);
+    }
+
+    void ApplyTileEffect(TileType type)
+    {
+        if (PlayerStats.Instance == null) return;
+        switch (type)
+        {
+            case TileType.Combat:
+                PlayerStats.Instance.TakeDamage(2);
+                break;
+            case TileType.Loot:
+                if (PlayerStats.Instance.hp < PlayerStats.Instance.maxHp)
+                    PlayerStats.Instance.Heal(1);
+                else
+                    PlayerStats.Instance.AddAmmo(2);
+                break;
+        }
     }
 
     public void RegisterLoop()
@@ -36,6 +56,11 @@ public class GameManager : MonoBehaviour
         LoopCount++;
         OnLoopCompleted?.Invoke(LoopCount);
         if (LoopCount % loopsPerBossFight == 0)
+        {
+            BossFightPending = true;
             OnBossFightReady?.Invoke(LoopCount);
+        }
     }
+
+    public void ClearBossFightPending() => BossFightPending = false;
 }

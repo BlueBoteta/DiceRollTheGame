@@ -22,15 +22,15 @@ public class BoardGenerator : MonoBehaviour
     [Header("Tile Distribution")]
     [Range(0, 100)] public int combatChance = 40;
     [Range(0, 100)] public int lootChance   = 30;
-    // remainder = Normal. Boss is placed at fixed index below.
-    public int bossTileIndex = 27;
 
     public List<BoardTile> Tiles { get; } = new List<BoardTile>();
+    public BoardTile BossTile { get; private set; }
 
     void Awake()
     {
         Instance = this;
         GenerateBoard();
+        GenerateBossTile();
     }
 
     void GenerateBoard()
@@ -72,13 +72,42 @@ public class BoardGenerator : MonoBehaviour
 
     TileType AssignType(int index, int total)
     {
-        if (index == 0)           return TileType.Normal;
-        if (index == bossTileIndex) return TileType.Boss;
+        if (index == 0) return TileType.Normal;
 
         int roll = Random.Range(0, 100);
         if (roll < combatChance)              return TileType.Combat;
         if (roll < combatChance + lootChance) return TileType.Loot;
         return TileType.Normal;
+    }
+
+    void GenerateBossTile()
+    {
+        // Center of the 10x10 isometric grid: col=5,row=5 → (0, -2.5), nudged up slightly
+        Vector3 center = new Vector3(0f, -2.25f, 0f);
+        int depth = 9;
+
+        Sprite bigFill    = MakeDiamondSprite(256, 128, 0.04f);
+        Sprite bigOutline = MakeDiamondSprite(256, 128, 0.00f);
+
+        var outlineGO = new GameObject("BossTile_Outline");
+        outlineGO.transform.SetParent(transform);
+        outlineGO.transform.position = center;
+        var outlineSR = outlineGO.AddComponent<SpriteRenderer>();
+        outlineSR.sprite = bigOutline;
+        outlineSR.color  = new Color(0.65f, 0.1f, 0.75f, 1f);
+        outlineSR.sortingOrder = depth * 2;
+
+        var tileGO = new GameObject("BossTile");
+        tileGO.transform.SetParent(transform);
+        tileGO.transform.position = center;
+        var sr = tileGO.AddComponent<SpriteRenderer>();
+        sr.sprite = bigFill;
+        sr.sortingOrder = depth * 2 + 1;
+
+        BossTile = tileGO.AddComponent<BoardTile>();
+        BossTile.pathIndex = -1;
+        BossTile.tileType  = TileType.Boss;
+        BossTile.SetBaseColor(bossTileColor);
     }
 
     Color ColorForType(TileType type, bool isStart)

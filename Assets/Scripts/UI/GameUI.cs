@@ -305,6 +305,14 @@ public class GameUI : MonoBehaviour
         if (PlayerToken.Instance != null)
             yield return StartCoroutine(PlayerToken.Instance.MoveSteps(die1 + die2));
 
+        if (GameManager.Instance != null && GameManager.Instance.BossFightPending)
+        {
+            GameManager.Instance.ClearBossFightPending();
+            yield return new WaitForSeconds(0.5f);
+            if (PlayerToken.Instance != null)
+                yield return StartCoroutine(PlayerToken.Instance.MoveToBoss());
+        }
+
         yield return new WaitForSeconds(0.3f);
 
         _die1Text.color = Color.white;

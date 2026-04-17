@@ -64,6 +64,25 @@ public class PlayerToken : MonoBehaviour
         }
     }
 
+    public IEnumerator MoveToBoss()
+    {
+        Vector3 from    = transform.position;
+        Vector3 bossPos = BoardGenerator.Instance.BossTile.transform.position;
+        bossPos.y += 0.18f;
+
+        float duration = 1.4f;
+        float t = 0f;
+        while (t < duration)
+        {
+            t += Time.deltaTime;
+            transform.position = Vector3.Lerp(from, bossPos,
+                Mathf.SmoothStep(0f, 1f, t / duration));
+            yield return null;
+        }
+        transform.position = bossPos;
+        OnLandedOnTile?.Invoke(BoardGenerator.Instance.BossTile);
+    }
+
     Vector3 TileWorldPos(int index)
     {
         Vector3 p = BoardGenerator.Instance.Tiles[index].transform.position;
