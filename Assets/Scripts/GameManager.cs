@@ -37,18 +37,14 @@ public class GameManager : MonoBehaviour
     void ApplyTileEffect(TileType type)
     {
         if (PlayerStats.Instance == null) return;
-        switch (type)
+        if (type == TileType.Loot)
         {
-            case TileType.Combat:
-                PlayerStats.Instance.TakeDamage(2);
-                break;
-            case TileType.Loot:
-                if (PlayerStats.Instance.hp < PlayerStats.Instance.maxHp)
-                    PlayerStats.Instance.Heal(1);
-                else
-                    PlayerStats.Instance.AddAmmo(2);
-                break;
+            if (PlayerStats.Instance.hp < PlayerStats.Instance.maxHp)
+                PlayerStats.Instance.Heal(1);
+            else
+                PlayerStats.Instance.AddAmmo(2);
         }
+        // Combat is handled by CombatScreen
     }
 
     public void RegisterLoop()

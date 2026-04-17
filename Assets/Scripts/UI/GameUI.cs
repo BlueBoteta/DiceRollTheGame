@@ -24,6 +24,7 @@ public class GameUI : MonoBehaviour
     {
         EnsureEventSystem();
         BuildUI();
+        new GameObject("CombatScreen").AddComponent<CombatScreen>();
     }
 
     void Start()
@@ -311,6 +312,16 @@ public class GameUI : MonoBehaviour
             yield return new WaitForSeconds(0.5f);
             if (PlayerToken.Instance != null)
                 yield return StartCoroutine(PlayerToken.Instance.MoveToBoss());
+        }
+        else if (PlayerToken.Instance != null && BoardGenerator.Instance != null)
+        {
+            var landed = BoardGenerator.Instance.Tiles[PlayerToken.Instance.CurrentTile];
+            if (landed.tileType == TileType.Combat && CombatScreen.Instance != null)
+            {
+                landed.EnemyMarker?.SetActive(false);
+                yield return new WaitForSeconds(0.3f);
+                yield return StartCoroutine(CombatScreen.Instance.Open());
+            }
         }
 
         yield return new WaitForSeconds(0.3f);

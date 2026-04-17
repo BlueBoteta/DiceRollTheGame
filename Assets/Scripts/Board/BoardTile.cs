@@ -9,6 +9,8 @@ public class BoardTile : MonoBehaviour
     public TileType tileType = TileType.Normal;
     public Vector2Int gridPos;
 
+    public GameObject EnemyMarker;
+
     SpriteRenderer _sr;
     Color _baseColor;
     Coroutine _highlightRoutine;

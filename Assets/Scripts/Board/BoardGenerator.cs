@@ -31,6 +31,7 @@ public class BoardGenerator : MonoBehaviour
         Instance = this;
         GenerateBoard();
         GenerateBossTile();
+        SpawnEnemyMarkers();
     }
 
     void GenerateBoard()
@@ -145,6 +146,46 @@ public class BoardGenerator : MonoBehaviour
             (col - row) * tileWidth * 0.5f,
             -(col + row) * tileHeight * 0.5f,
             0f);
+    }
+
+    void SpawnEnemyMarkers()
+    {
+        Sprite skull = MakeSkullSprite();
+        foreach (var tile in Tiles)
+        {
+            if (tile.tileType != TileType.Combat) continue;
+            var go = new GameObject("EnemyMarker_" + tile.pathIndex);
+            go.transform.SetParent(tile.transform);
+            go.transform.position = tile.transform.position + new Vector3(0f, 0.26f, 0f);
+            var sr = go.AddComponent<SpriteRenderer>();
+            sr.sprite       = skull;
+            sr.color        = new Color(1f, 0.3f, 0.3f);
+            sr.sortingOrder = 58;
+            tile.EnemyMarker = go;
+        }
+    }
+
+    static Sprite MakeSkullSprite()
+    {
+        // Small circle with an X drawn in it as a placeholder skull/enemy icon
+        int sz = 32, r = sz / 2;
+        var tex = new Texture2D(sz, sz, TextureFormat.RGBA32, false);
+        tex.filterMode = FilterMode.Point;
+        var px = new Color[sz * sz];
+        float cx = r - 0.5f, cy = r - 0.5f;
+        for (int y = 0; y < sz; y++)
+        for (int x = 0; x < sz; x++)
+        {
+            float d = Mathf.Sqrt((x - cx) * (x - cx) + (y - cy) * (y - cy));
+            if (d > r) { px[y * sz + x] = Color.clear; continue; }
+            // X pattern
+            float nx = Mathf.Abs(x - cx), ny = Mathf.Abs(y - cy);
+            bool onX = Mathf.Abs(nx - ny) < 1.8f && d < r - 1f;
+            px[y * sz + x] = onX ? Color.white : new Color(1f, 1f, 1f, 0.18f);
+        }
+        tex.SetPixels(px);
+        tex.Apply();
+        return Sprite.Create(tex, new Rect(0, 0, sz, sz), Vector2.one * 0.5f, 100f);
     }
 
     static Sprite MakeDiamondSprite(int w, int h, float gap)
