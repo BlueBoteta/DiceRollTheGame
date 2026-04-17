@@ -26,6 +26,9 @@ public class GameUI : MonoBehaviour
         BuildUI();
         new GameObject("CombatScreen").AddComponent<CombatScreen>();
         new GameObject("GameOverScreen").AddComponent<GameOverScreen>();
+        new GameObject("StoryScreen").AddComponent<StoryScreen>();
+        new GameObject("LootCarScreen").AddComponent<LootCarScreen>();
+        new GameObject("LootVendingScreen").AddComponent<LootVendingScreen>();
     }
 
     void Start()
@@ -327,6 +330,19 @@ public class GameUI : MonoBehaviour
                 landed.EnemyMarker?.SetActive(false);
                 yield return new WaitForSeconds(0.3f);
                 yield return StartCoroutine(CombatScreen.Instance.Open());
+            }
+            else if (landed.tileType == TileType.Story && StoryScreen.Instance != null)
+            {
+                yield return new WaitForSeconds(0.3f);
+                yield return StartCoroutine(StoryScreen.Instance.Open());
+            }
+            else if (landed.tileType == TileType.Loot)
+            {
+                yield return new WaitForSeconds(0.3f);
+                if (Random.value < 0.5f && LootCarScreen.Instance != null)
+                    yield return StartCoroutine(LootCarScreen.Instance.Open());
+                else if (LootVendingScreen.Instance != null)
+                    yield return StartCoroutine(LootVendingScreen.Instance.Open());
             }
         }
 

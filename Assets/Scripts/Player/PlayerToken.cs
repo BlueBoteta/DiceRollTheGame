@@ -10,17 +10,34 @@ public class PlayerToken : MonoBehaviour
 
     public event Action<BoardTile> OnLandedOnTile;
 
-    const float StepDuration = 0.18f;
+    const float StepDuration = 0.22f;
+    const float IdleFps      = 10f;
+    // y offset so the character's feet sit on the tile surface
+    const float TileYOffset  = 0.0f;
+
+    SpriteRenderer _sr;
+    Sprite[]       _idleFrames;
+    Coroutine      _idleRoutine;
+
+    // ── Lifecycle ─────────────────────────────────────────────────────────────
 
     void Awake()
     {
         Instance = this;
-        var sr = gameObject.AddComponent<SpriteRenderer>();
-        sr.sprite = BuildCircleSprite(20, new Color(1f, 0.85f, 0.1f));
-        sr.sortingOrder = 60;
+        _sr = gameObject.AddComponent<SpriteRenderer>();
+        _sr.sortingOrder = 60;
+
+        _idleFrames = LoadIdleFrames();
+        _sr.sprite  = _idleFrames.Length > 0 ? _idleFrames[0] : null;
     }
 
-    void Start() => PlaceOnTile(0);
+    void Start()
+    {
+        PlaceOnTile(0);
+        PlayIdle();
+    }
+
+    // ── Public API ────────────────────────────────────────────────────────────
 
     public void PlaceOnTile(int index)
     {
@@ -30,6 +47,9 @@ public class PlayerToken : MonoBehaviour
 
     public IEnumerator MoveSteps(int steps)
     {
+        StopIdle();
+        _sr.sprite = _idleFrames[0]; // freeze on first frame during movement
+
         int tileCount = BoardGenerator.Instance.Tiles.Count;
 
         for (int i = 0; i < steps; i++)
@@ -56,22 +76,25 @@ public class PlayerToken : MonoBehaviour
 
             BoardGenerator.Instance.Tiles[next].Highlight();
 
-            // Fire landing event only on the final tile
             if (i == steps - 1)
                 OnLandedOnTile?.Invoke(BoardGenerator.Instance.Tiles[next]);
             else
                 yield return new WaitForSeconds(0.04f);
         }
+
+        PlayIdle();
     }
 
     public IEnumerator MoveToBoss()
     {
+        StopIdle();
+        _sr.sprite = _idleFrames[0];
+
         Vector3 from    = transform.position;
         Vector3 bossPos = BoardGenerator.Instance.BossTile.transform.position;
-        bossPos.y += 0.18f;
+        bossPos.y += TileYOffset;
 
-        float duration = 1.4f;
-        float t = 0f;
+        float duration = 1.4f, t = 0f;
         while (t < duration)
         {
             t += Time.deltaTime;
@@ -80,39 +103,98 @@ public class PlayerToken : MonoBehaviour
             yield return null;
         }
         transform.position = bossPos;
+        PlayIdle();
         OnLandedOnTile?.Invoke(BoardGenerator.Instance.BossTile);
     }
+
+    // ── Idle animation ────────────────────────────────────────────────────────
+
+    void PlayIdle()
+    {
+        StopIdle();
+        _idleRoutine = StartCoroutine(IdleLoop());
+    }
+
+    void StopIdle()
+    {
+        if (_idleRoutine != null) { StopCoroutine(_idleRoutine); _idleRoutine = null; }
+    }
+
+    IEnumerator IdleLoop()
+    {
+        float interval = 1f / IdleFps;
+        int   frame    = 0;
+        while (true)
+        {
+            _sr.sprite = _idleFrames[frame % _idleFrames.Length];
+            frame++;
+            yield return new WaitForSeconds(interval);
+        }
+    }
+
+    // ── Helpers ───────────────────────────────────────────────────────────────
 
     Vector3 TileWorldPos(int index)
     {
         Vector3 p = BoardGenerator.Instance.Tiles[index].transform.position;
-        p.y += 0.18f;
+        p.y += TileYOffset;
         return p;
     }
 
-    static Sprite BuildCircleSprite(int radius, Color color)
-    {
-        int sz = radius * 2;
-        Texture2D tex = new Texture2D(sz, sz, TextureFormat.RGBA32, false);
-        tex.filterMode = FilterMode.Bilinear;
-        Color[] px = new Color[sz * sz];
-        float cx = radius - 0.5f, cy = radius - 0.5f;
+    // ── Sprite loading ────────────────────────────────────────────────────────
 
+    static Sprite[] LoadIdleFrames()
+    {
+        var tex = Resources.Load<Texture2D>("Character/IDLECharacter");
+        if (tex == null) return new[] { BuildFallback() };
+
+        // Get slice rects from the imported sprites, ignore their broken pivots
+        var raw = Resources.LoadAll<Sprite>("Character/IDLECharacter");
+        System.Array.Sort(raw, (a, b) => ParseIdx(a.name).CompareTo(ParseIdx(b.name)));
+
+        // Filter out oversized edge artifacts (width > 120px)
+        var clean = System.Array.FindAll(raw, s => s.rect.width < 120f);
+        if (clean.Length == 0) clean = raw;
+
+        // Re-create sprites with correct pivot (bottom-center at 12% from bottom = feet)
+        // and PPU=300 so the character is ~0.26 units wide
+        const float Ppu      = 300f;
+        const float PivotY   = 0.12f; // normalized: near feet
+
+        var result = new Sprite[clean.Length];
+        for (int i = 0; i < clean.Length; i++)
+        {
+            result[i] = Sprite.Create(
+                tex,
+                clean[i].rect,
+                new Vector2(0.5f, PivotY),
+                Ppu);
+        }
+        return result;
+    }
+
+    static int ParseIdx(string name)
+    {
+        int i = name.LastIndexOf('_');
+        return i >= 0 && int.TryParse(name.Substring(i + 1), out int n) ? n : 0;
+    }
+
+    static Sprite BuildFallback()
+    {
+        int sz = 40;
+        var tex = new Texture2D(sz, sz, TextureFormat.RGBA32, false);
+        var px  = new Color[sz * sz];
+        float cx = sz * 0.5f - 0.5f, cy = sz * 0.5f - 0.5f, r = sz * 0.5f;
         for (int y = 0; y < sz; y++)
         for (int x = 0; x < sz; x++)
         {
             float d = Mathf.Sqrt((x - cx) * (x - cx) + (y - cy) * (y - cy));
-            if (d <= radius - 1.5f)
-                px[y * sz + x] = color;
-            else if (d <= radius)
-                px[y * sz + x] = Color.Lerp(color, Color.clear,
-                    (d - (radius - 1.5f)) / 1.5f);
-            else
-                px[y * sz + x] = Color.clear;
+            px[y * sz + x] = d <= r - 2f ? new Color(1f, 0.85f, 0.1f)
+                           : d <= r      ? Color.Lerp(new Color(1f, 0.85f, 0.1f),
+                                           Color.clear, (d - (r - 2f)) / 2f)
+                           : Color.clear;
         }
-
-        tex.SetPixels(px);
-        tex.Apply();
-        return Sprite.Create(tex, new Rect(0, 0, sz, sz), Vector2.one * 0.5f, 100f);
+        tex.SetPixels(px); tex.Apply();
+        return Sprite.Create(tex, new Rect(0, 0, sz, sz), new Vector2(0.5f, 0.12f), 100f);
     }
 }

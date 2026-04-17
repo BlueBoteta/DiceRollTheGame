@@ -17,6 +17,7 @@ public class BoardGenerator : MonoBehaviour
     public Color combatTileColor  = new Color(0.45f, 0.10f, 0.10f, 1f);
     public Color lootTileColor    = new Color(0.35f, 0.28f, 0.08f, 1f);
     public Color bossTileColor    = new Color(0.30f, 0.05f, 0.35f, 1f);
+    public Color storyTileColor    = new Color(0.10f, 0.25f, 0.35f, 1f);
     public Color tileHighlightColor = new Color(1f, 0.85f, 0.2f, 1f);
 
     [Header("Tile Distribution")]
@@ -73,7 +74,8 @@ public class BoardGenerator : MonoBehaviour
 
     TileType AssignType(int index, int total)
     {
-        if (index == 0) return TileType.Normal;
+        if (index == 0)  return TileType.Normal;
+        if (index == 6) return TileType.Story;
 
         int roll = Random.Range(0, 100);
         if (roll < combatChance)              return TileType.Combat;
@@ -119,6 +121,7 @@ public class BoardGenerator : MonoBehaviour
             TileType.Combat => combatTileColor,
             TileType.Loot   => lootTileColor,
             TileType.Boss   => bossTileColor,
+            TileType.Story  => storyTileColor,
             _               => tileColor,
         };
     }
