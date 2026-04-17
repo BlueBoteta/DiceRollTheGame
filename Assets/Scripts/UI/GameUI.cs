@@ -25,6 +25,7 @@ public class GameUI : MonoBehaviour
         EnsureEventSystem();
         BuildUI();
         new GameObject("CombatScreen").AddComponent<CombatScreen>();
+        new GameObject("GameOverScreen").AddComponent<GameOverScreen>();
     }
 
     void Start()
@@ -312,6 +313,11 @@ public class GameUI : MonoBehaviour
             yield return new WaitForSeconds(0.5f);
             if (PlayerToken.Instance != null)
                 yield return StartCoroutine(PlayerToken.Instance.MoveToBoss());
+            if (CombatScreen.Instance != null)
+            {
+                yield return new WaitForSeconds(0.4f);
+                yield return StartCoroutine(CombatScreen.Instance.Open("The Horde Boss", 45, 4));
+            }
         }
         else if (PlayerToken.Instance != null && BoardGenerator.Instance != null)
         {
@@ -322,6 +328,13 @@ public class GameUI : MonoBehaviour
                 yield return new WaitForSeconds(0.3f);
                 yield return StartCoroutine(CombatScreen.Instance.Open());
             }
+        }
+
+        // Don't re-enable roll if player is dead (game over screen took over)
+        if (PlayerStats.Instance != null && PlayerStats.Instance.hp <= 0)
+        {
+            _rolling = false;
+            yield break;
         }
 
         yield return new WaitForSeconds(0.3f);

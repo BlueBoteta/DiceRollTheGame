@@ -29,20 +29,37 @@ public class CombatScreen : MonoBehaviour
         _canvas.gameObject.SetActive(false);
     }
 
-    public IEnumerator Open()
+    // enemyMaxHp / enemyAttack == 0 → use random defaults for normal combat
+    public IEnumerator Open(string enemyName = "Zombie", int enemyMaxHp = 0, int enemyAttack = 0)
     {
-        _enemyMaxHp   = Random.Range(6, 13);
-        _enemyHp      = _enemyMaxHp;
-        _enemyAttack  = Random.Range(1, 3);
-        _exitPressed  = false;
+        _enemyMaxHp  = enemyMaxHp  > 0 ? enemyMaxHp  : Random.Range(6, 13);
+        _enemyHp     = _enemyMaxHp;
+        _enemyAttack = enemyAttack > 0 ? enemyAttack : Random.Range(1, 3);
+        _exitPressed = false;
         _logText.text = "";
         _exitBtn.interactable = false;
+
+        // Update enemy name label
+        var nameLabel = _canvas.transform.Find(
+            "CombatCanvas/Panel/ZombieSide/Name") as RectTransform;
+        if (nameLabel != null)
+        {
+            var txt = nameLabel.GetComponent<Text>();
+            if (txt != null) txt.text = enemyName;
+        }
 
         RefreshBars();
         _canvas.gameObject.SetActive(true);
 
         yield return new WaitForSeconds(0.4f);
-        yield return StartCoroutine(RunCombat());
+        yield return StartCoroutine(RunCombat(enemyName));
+
+        if (PlayerStats.Instance != null && PlayerStats.Instance.hp <= 0)
+        {
+            yield return new WaitForSecondsRealtime(1.2f);
+            GameOverScreen.Instance?.Show();
+            yield break;
+        }
 
         while (!_exitPressed)
             yield return null;
@@ -50,14 +67,13 @@ public class CombatScreen : MonoBehaviour
         _canvas.gameObject.SetActive(false);
     }
 
-    IEnumerator RunCombat()
+    IEnumerator RunCombat(string enemyName)
     {
-        Log("A zombie lunges at you!");
+        Log(enemyName + " attacks!");
         yield return new WaitForSeconds(0.8f);
 
         while (_enemyHp > 0 && PlayerStats.Instance != null && PlayerStats.Instance.hp > 0)
         {
-            // Player attacks
             int pdmg = Random.Range(2, 5);
             _enemyHp = Mathf.Max(0, _enemyHp - pdmg);
             Log("You strike for " + pdmg + " dmg.");
@@ -67,9 +83,8 @@ public class CombatScreen : MonoBehaviour
 
             if (_enemyHp <= 0) break;
 
-            // Enemy attacks
             PlayerStats.Instance.TakeDamage(_enemyAttack);
-            Log("Zombie bites for " + _enemyAttack + " dmg.");
+            Log(enemyName + " hits for " + _enemyAttack + " dmg.");
             yield return StartCoroutine(Punch(_enemyIcon, new Vector2(-35, 0)));
             RefreshBars();
             yield return new WaitForSeconds(0.45f);
@@ -77,15 +92,14 @@ public class CombatScreen : MonoBehaviour
 
         if (_enemyHp <= 0)
         {
-            Log("-- Enemy defeated! +1 Ammo --");
+            Log("-- " + enemyName + " defeated! +1 Ammo --");
             PlayerStats.Instance?.AddAmmo(1);
+            _exitBtn.interactable = true;
         }
         else
         {
             Log("-- You were overwhelmed... --");
         }
-
-        _exitBtn.interactable = true;
     }
 
     IEnumerator Punch(RectTransform rt, Vector2 dir)
