@@ -21,6 +21,11 @@ public class LootVendingScreen : MonoBehaviour
     static readonly Vector2 ItemStart   = new Vector2(-42f, -80f);  // local to machine
     static readonly Vector2 ItemEnd     = new Vector2(  0f, -140f); // local to machine (tray)
 
+    static readonly string[] VendingLootPool =
+    {
+        "food","food","food","pills","pills","meds","meds","ammo","ammo","battery"
+    };
+
     static readonly string[] Messages =
     {
         "B4 drops.\n\nDiet Cola Zero. You haven't had electricity in days.\nThe can is somehow still cold.\n\nYou drink it in one go. Worth it.",
@@ -113,7 +118,17 @@ public class LootVendingScreen : MonoBehaviour
 
         yield return new WaitForSeconds(0.3f);
 
-        string msg = Messages[Random.Range(0, Messages.Length)];
+        // Pick and give loot
+        string lootId = VendingLootPool[Random.Range(0, VendingLootPool.Length)];
+        int qty = lootId == "ammo" ? Random.Range(1, 4) : 1;
+        bool added = Inventory.Instance != null && Inventory.Instance.Add(lootId, qty);
+        string itemName = ItemFactory.Create(lootId)?.displayName ?? lootId;
+        string itemLine = added
+            ? (qty > 1 ? $"\n\n+ {qty}x {itemName} added to inventory."
+                       : $"\n\n+ {itemName} added to inventory.")
+            : "\n\nInventory full. You leave it behind.";
+
+        string msg = Messages[Random.Range(0, Messages.Length)] + itemLine;
         foreach (char c in msg)
         {
             _messageText.text += c;

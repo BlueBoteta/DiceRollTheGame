@@ -32,6 +32,7 @@ public class GameUI : MonoBehaviour
         new GameObject("BlackjackScreen").AddComponent<BlackjackScreen>();
         new GameObject("Inventory").AddComponent<Inventory>();
         new GameObject("InventoryScreen").AddComponent<InventoryScreen>();
+        new GameObject("WinScreen").AddComponent<WinScreen>();
     }
 
     void Start()
@@ -335,6 +336,12 @@ public class GameUI : MonoBehaviour
                 yield return new WaitForSeconds(0.4f);
                 yield return StartCoroutine(CombatScreen.Instance.Open("The Horde Boss", 45, 4));
             }
+
+            // Boss fight resolved — player alive means boss is dead
+            _rolling = false;
+            if (PlayerStats.Instance != null && PlayerStats.Instance.hp > 0)
+                WinScreen.Instance?.Show();
+            yield break;
         }
         else if (PlayerToken.Instance != null && BoardGenerator.Instance != null)
         {

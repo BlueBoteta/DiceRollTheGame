@@ -36,14 +36,7 @@ public class GameManager : MonoBehaviour
 
     void ApplyTileEffect(TileType type)
     {
-        if (PlayerStats.Instance == null) return;
-        if (type == TileType.Loot)
-        {
-            if (PlayerStats.Instance.hp < PlayerStats.Instance.maxHp)
-                PlayerStats.Instance.Heal(1);
-            else
-                Inventory.Instance?.Add("ammo", 2);
-        }
+        // Loot is handled by LootCarScreen / LootVendingScreen
         // Combat is handled by CombatScreen
     }
 

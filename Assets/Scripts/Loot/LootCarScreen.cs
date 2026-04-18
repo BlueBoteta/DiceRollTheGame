@@ -14,6 +14,11 @@ public class LootCarScreen : MonoBehaviour
     Button        _continueBtn;
     bool          _done;
 
+    static readonly string[] CarLootPool =
+    {
+        "ammo","ammo","ammo","scrap","scrap","medkit","food","food","pills","lockpick"
+    };
+
     static readonly string[] Messages =
     {
         "Half a protein bar and a box of hollow-points.\nThe bar expired two years ago.\nThe hollow-points didn't.\n\nToday's looking up.",
@@ -73,7 +78,17 @@ public class LootCarScreen : MonoBehaviour
         yield return new WaitForSeconds(0.2f);
         _openBtn.gameObject.SetActive(false);
 
-        string msg = Messages[Random.Range(0, Messages.Length)];
+        // Pick and give loot
+        string lootId = CarLootPool[Random.Range(0, CarLootPool.Length)];
+        int qty = lootId == "ammo" ? Random.Range(2, 5) : 1;
+        bool added = Inventory.Instance != null && Inventory.Instance.Add(lootId, qty);
+        string itemName = ItemFactory.Create(lootId)?.displayName ?? lootId;
+        string itemLine = added
+            ? (qty > 1 ? $"\n\n+ {qty}x {itemName} added to inventory."
+                       : $"\n\n+ {itemName} added to inventory.")
+            : "\n\nInventory full. You leave it behind.";
+
+        string msg = Messages[Random.Range(0, Messages.Length)] + itemLine;
         foreach (char c in msg)
         {
             _messageText.text += c;
