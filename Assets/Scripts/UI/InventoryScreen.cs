@@ -26,6 +26,12 @@ public class InventoryScreen : MonoBehaviour
     Button _dropBtn;
     Text   _useBtnTxt;
 
+    // Drop quantity picker
+    RectTransform _dropQtyPanel;
+    Text          _dropQtyNum;
+    int           _dropQty;
+    int           _dropQtyMax;
+
     int  _selectedSlot = -1;
     bool _animating;
 
@@ -244,8 +250,40 @@ public class InventoryScreen : MonoBehaviour
     void DropSelected()
     {
         if (_selectedSlot < 0 || Inventory.Instance == null) return;
-        Inventory.Instance.DropSlot(_selectedSlot);
-        SelectSlot(-1);
+        var item = Inventory.Instance.GetSlot(_selectedSlot);
+        if (item == null) return;
+
+        if (item.stackable && item.quantity > 1)
+        {
+            ShowDropQtyPanel(item.quantity);
+            return;
+        }
+        ExecuteDrop(1);
+    }
+
+    void ShowDropQtyPanel(int max)
+    {
+        _dropQty    = 1;
+        _dropQtyMax = max;
+        UpdateDropQtyNum();
+        _dropQtyPanel.gameObject.SetActive(true);
+    }
+
+    void UpdateDropQtyNum() =>
+        _dropQtyNum.text = _dropQty.ToString();
+
+    void ExecuteDrop(int qty)
+    {
+        if (_selectedSlot < 0 || Inventory.Instance == null) return;
+        var item = Inventory.Instance.GetSlot(_selectedSlot);
+        if (item == null) return;
+
+        Inventory.Instance.Remove(item.id, qty);
+
+        // If slot is now empty, deselect
+        var remaining = Inventory.Instance.GetSlot(_selectedSlot);
+        if (remaining == null) SelectSlot(-1);
+        else                   SetInfoStrip(remaining);
     }
 
     void ShowFeedback(string msg, Color col)
@@ -382,6 +420,7 @@ public class InventoryScreen : MonoBehaviour
         }
 
         BuildInfoStrip(_panelRT);
+        BuildDropQtyPanel(_panelRT);
 
         // Feedback text (above info strip)
         var fbRT = MakeRect("Feedback", _panelRT);
@@ -536,6 +575,93 @@ public class InventoryScreen : MonoBehaviour
         dropTxt.text = "DROP"; dropTxt.alignment = TextAnchor.MiddleCenter;
         dropTxt.fontSize = 21; dropTxt.fontStyle = FontStyle.Bold;
         dropTxt.color = Color.white; dropTxt.font = DefaultFont();
+    }
+
+    void BuildDropQtyPanel(RectTransform parent)
+    {
+        // Sits exactly over the info strip — same position / size
+        var panel = CenterRect("DropQtyPanel", parent, new Vector2(0, -172), new Vector2(820, 130));
+        panel.gameObject.AddComponent<Image>().color = new Color(0.06f, 0.06f, 0.10f, 0.98f);
+        _dropQtyPanel = panel;
+
+        // Left border accent
+        var lb = MakeRect("LeftBorder", panel);
+        lb.anchorMin = new Vector2(0,0.1f); lb.anchorMax = new Vector2(0,0.9f);
+        lb.pivot = new Vector2(0,0.5f); lb.sizeDelta = new Vector2(3,0);
+        lb.anchoredPosition = Vector2.zero;
+        lb.gameObject.AddComponent<Image>().color = new Color(0.72f, 0.12f, 0.12f);
+
+        // Title
+        var titleRT = MakeRect("Title", panel);
+        CenterAnchor(titleRT, new Vector2(0, 42), new Vector2(500, 28));
+        var titleTxt = titleRT.gameObject.AddComponent<Text>();
+        titleTxt.text = "DROP HOW MANY?"; titleTxt.alignment = TextAnchor.MiddleCenter;
+        titleTxt.fontSize = 20; titleTxt.fontStyle = FontStyle.Bold;
+        titleTxt.color = new Color(0.88f, 0.35f, 0.35f); titleTxt.font = DefaultFont();
+
+        // Minus button
+        var minusGO = CenterRect("Minus", panel, new Vector2(-110, -5), new Vector2(48, 48));
+        minusGO.gameObject.AddComponent<Image>().color = new Color(0.3f, 0.10f, 0.10f);
+        var minusBtn = minusGO.gameObject.AddComponent<Button>();
+        var mc = minusBtn.colors; mc.highlightedColor = new Color(0.5f, 0.15f, 0.15f); minusBtn.colors = mc;
+        minusBtn.onClick.AddListener(() => { _dropQty = Mathf.Max(1, _dropQty - 1); UpdateDropQtyNum(); });
+        var minusLbl = MakeRect("Lbl", minusGO);
+        minusLbl.anchorMin = Vector2.zero; minusLbl.anchorMax = Vector2.one; minusLbl.sizeDelta = Vector2.zero;
+        var mt = minusLbl.gameObject.AddComponent<Text>();
+        mt.text = "-"; mt.alignment = TextAnchor.MiddleCenter; mt.fontSize = 28;
+        mt.fontStyle = FontStyle.Bold; mt.color = Color.white; mt.font = DefaultFont();
+
+        // Quantity number display
+        var numRT = CenterRect("Num", panel, new Vector2(0, -5), new Vector2(80, 48));
+        numRT.gameObject.AddComponent<Image>().color = new Color(0.08f, 0.08f, 0.12f);
+        var numTxtRT = MakeRect("NumTxt", numRT);
+        numTxtRT.anchorMin = Vector2.zero; numTxtRT.anchorMax = Vector2.one; numTxtRT.sizeDelta = Vector2.zero;
+        _dropQtyNum = numTxtRT.gameObject.AddComponent<Text>();
+        _dropQtyNum.text = "1"; _dropQtyNum.alignment = TextAnchor.MiddleCenter;
+        _dropQtyNum.fontSize = 26; _dropQtyNum.fontStyle = FontStyle.Bold;
+        _dropQtyNum.color = new Color(1f, 0.82f, 0.2f); _dropQtyNum.font = DefaultFont();
+
+        // Plus button
+        var plusGO = CenterRect("Plus", panel, new Vector2(110, -5), new Vector2(48, 48));
+        plusGO.gameObject.AddComponent<Image>().color = new Color(0.10f, 0.30f, 0.12f);
+        var plusBtn = plusGO.gameObject.AddComponent<Button>();
+        var pc = plusBtn.colors; pc.highlightedColor = new Color(0.15f, 0.50f, 0.18f); plusBtn.colors = pc;
+        plusBtn.onClick.AddListener(() => { _dropQty = Mathf.Min(_dropQtyMax, _dropQty + 1); UpdateDropQtyNum(); });
+        var plusLbl = MakeRect("Lbl", plusGO);
+        plusLbl.anchorMin = Vector2.zero; plusLbl.anchorMax = Vector2.one; plusLbl.sizeDelta = Vector2.zero;
+        var pt = plusLbl.gameObject.AddComponent<Text>();
+        pt.text = "+"; pt.alignment = TextAnchor.MiddleCenter; pt.fontSize = 28;
+        pt.fontStyle = FontStyle.Bold; pt.color = Color.white; pt.font = DefaultFont();
+
+        // Confirm button
+        var confirmGO = CenterRect("Confirm", panel, new Vector2(270, -5), new Vector2(130, 48));
+        confirmGO.gameObject.AddComponent<Image>().color = new Color(0.45f, 0.10f, 0.10f);
+        var confirmBtn = confirmGO.gameObject.AddComponent<Button>();
+        var cc = confirmBtn.colors; cc.highlightedColor = new Color(0.65f, 0.15f, 0.15f); confirmBtn.colors = cc;
+        confirmBtn.onClick.AddListener(() =>
+        {
+            _dropQtyPanel.gameObject.SetActive(false);
+            ExecuteDrop(_dropQty);
+        });
+        var confirmLbl = MakeRect("Lbl", confirmGO);
+        confirmLbl.anchorMin = Vector2.zero; confirmLbl.anchorMax = Vector2.one; confirmLbl.sizeDelta = Vector2.zero;
+        var ct = confirmLbl.gameObject.AddComponent<Text>();
+        ct.text = "DROP"; ct.alignment = TextAnchor.MiddleCenter; ct.fontSize = 20;
+        ct.fontStyle = FontStyle.Bold; ct.color = Color.white; ct.font = DefaultFont();
+
+        // Cancel button
+        var cancelGO = CenterRect("Cancel", panel, new Vector2(270, -42), new Vector2(130, 34));
+        cancelGO.gameObject.AddComponent<Image>().color = new Color(0.18f, 0.18f, 0.22f);
+        var cancelBtn = cancelGO.gameObject.AddComponent<Button>();
+        var xc = cancelBtn.colors; xc.highlightedColor = new Color(0.26f, 0.26f, 0.32f); cancelBtn.colors = xc;
+        cancelBtn.onClick.AddListener(() => _dropQtyPanel.gameObject.SetActive(false));
+        var cancelLbl = MakeRect("Lbl", cancelGO);
+        cancelLbl.anchorMin = Vector2.zero; cancelLbl.anchorMax = Vector2.one; cancelLbl.sizeDelta = Vector2.zero;
+        var xt = cancelLbl.gameObject.AddComponent<Text>();
+        xt.text = "CANCEL"; xt.alignment = TextAnchor.MiddleCenter; xt.fontSize = 16;
+        xt.fontStyle = FontStyle.Bold; xt.color = new Color(0.6f,0.6f,0.6f); xt.font = DefaultFont();
+
+        panel.gameObject.SetActive(false);
     }
 
     // ── Helpers ──────────────────────────────────────────────────────────────

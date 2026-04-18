@@ -31,10 +31,10 @@ public class CombatScreen : MonoBehaviour
     struct AttackMove
     {
         public string flash, log;
-        public int minDmg, maxDmg;
+        public int minDmg, maxDmg, ammoCost;
         public Color color;
-        public AttackMove(string f, string l, int mn, int mx, Color c)
-        { flash = f; log = l; minDmg = mn; maxDmg = mx; color = c; }
+        public AttackMove(string f, string l, int mn, int mx, Color c, int ammo = 0)
+        { flash = f; log = l; minDmg = mn; maxDmg = mx; color = c; ammoCost = ammo; }
     }
 
     static readonly Color ColGold      = new Color(1f,   0.85f, 0.15f);
@@ -44,18 +44,22 @@ public class CombatScreen : MonoBehaviour
     static readonly Color ColPurple    = new Color(0.75f,0.15f, 0.85f);
     static readonly Color ColGreen     = new Color(0.28f,1f,    0.38f);
 
-    // Player moves — picked based on roll each turn
-    static readonly AttackMove[] PlayerMoves =
+    // Gun moves — cost ammo
+    static readonly AttackMove[] GunMoves =
     {
-        new AttackMove("BANG!",     "fire",         3,  7, ColGold),
-        new AttackMove("FIRE!",     "shoot",        4,  8, ColGold),
-        new AttackMove("STAB!",     "stab",         4,  9, ColOrange),
-        new AttackMove("SLASH!",    "slash",        3,  8, ColOrange),
-        new AttackMove("UNLOAD!",   "unload on",    5, 10, ColGold),
+        new AttackMove("BANG!",    "fire",       3,  7, ColGold,   ammo: 1),
+        new AttackMove("FIRE!",    "shoot",      4,  8, ColGold,   ammo: 1),
+        new AttackMove("UNLOAD!",  "unload on",  5, 10, ColGold,   ammo: 2),
     };
-    // Rare special — 8% chance
+    // Melee moves — free
+    static readonly AttackMove[] MeleeMoves =
+    {
+        new AttackMove("STAB!",    "stab",       4,  9, ColOrange),
+        new AttackMove("SLASH!",   "slash",      3,  8, ColOrange),
+    };
+    // Rare — 8% chance when ammo > 0, costs 1 ammo
     static readonly AttackMove HeadshotMove =
-        new AttackMove("HEADSHOT!", "headshot",    12, 18, new Color(1f, 0.98f, 0.35f));
+        new AttackMove("HEADSHOT!", "headshot", 12, 18, new Color(1f, 0.98f, 0.35f), ammo: 1);
 
     // Enemy tiers — chosen by lap count
     static readonly AttackMove[] EnemyTier1 =   // laps 1–2: weak, slow
@@ -168,6 +172,12 @@ public class CombatScreen : MonoBehaviour
             int pdmg = Random.Range(pm.minDmg, pm.maxDmg + 1);
             _enemyHp = Mathf.Max(0, _enemyHp - pdmg);
             Log("You " + pm.log + " for " + pdmg + ".");
+            if (pm.ammoCost > 0 && Inventory.Instance != null)
+            {
+                Inventory.Instance.Remove("ammo", pm.ammoCost);
+                if (Inventory.Instance.Count("ammo") == 0)
+                    Log("-- Ammo depleted.  Switching to melee. --");
+            }
             yield return StartCoroutine(FlashAction(pm.flash, pm.color));
             yield return StartCoroutine(Punch(_playerIcon, new Vector2(60, 0)));
             RefreshBars();
@@ -207,8 +217,13 @@ public class CombatScreen : MonoBehaviour
 
     static AttackMove PickPlayerMove()
     {
+        int ammo = Inventory.Instance != null ? Inventory.Instance.Count("ammo") : 0;
+        if (ammo <= 0)
+            return MeleeMoves[Random.Range(0, MeleeMoves.Length)];
         if (Random.value < 0.08f) return HeadshotMove;
-        return PlayerMoves[Random.Range(0, PlayerMoves.Length)];
+        return Random.value < 0.65f
+            ? GunMoves[Random.Range(0, GunMoves.Length)]
+            : MeleeMoves[Random.Range(0, MeleeMoves.Length)];
     }
 
     static string PlayerReaction(int dmg)
