@@ -627,7 +627,7 @@ public class BlackjackScreen : MonoBehaviour
 
         // Main felt panel
         var panel = Ctr("Panel", cGO.transform, Vector2.zero, new Vector2(1120f, 700f));
-        panel.gameObject.AddComponent<Image>().color = new Color(0.05f, 0.11f, 0.07f, 0.98f);
+        panel.gameObject.AddComponent<Image>().color = new Color(0.04f, 0.04f, 0.05f, 0.99f);
 
         // Gold border
         Border("BrdT", panel, new Vector2(0,1), new Vector2(1,1), new Vector2(.5f,1), new Vector2(0,3));
@@ -662,7 +662,7 @@ public class BlackjackScreen : MonoBehaviour
     void BuildBettingPanel(RectTransform panel)
     {
         var bp = Ctr("BettingPanel", panel, new Vector2(0f, -10f), new Vector2(700f, 570f));
-        bp.gameObject.AddComponent<Image>().color = new Color(0.04f, 0.09f, 0.05f, 0.96f);
+        bp.gameObject.AddComponent<Image>().color = new Color(0.03f, 0.03f, 0.04f, 0.98f);
         _bettingPanel = bp.gameObject;
 
         // Inner gold border
@@ -798,6 +798,44 @@ public class BlackjackScreen : MonoBehaviour
         }
         _gAmmo = gRes[0]; _gScrap = gRes[1]; _gMeds = gRes[2];
 
+        // ── Dealer portrait — right sidebar, mirrors survivor box on the left ──
+        // Frame: pure black with gold border
+        var dpBox = Ctr("DealerPortrait", gp, new Vector2(445f, 110f), new Vector2(230f, 216f));
+        dpBox.gameObject.AddComponent<Image>().color = new Color(0f, 0f, 0f, 1f);
+        var dpBrd = Rt("DPBrd", dpBox);
+        dpBrd.anchorMin = Vector2.zero; dpBrd.anchorMax = Vector2.one;
+        dpBrd.sizeDelta = new Vector2(-3f, -3f); dpBrd.anchoredPosition = Vector2.zero;
+        dpBrd.gameObject.AddComponent<Image>().color = new Color(0.58f, 0.42f, 0.12f, 0.90f);
+
+        var dealerSprite = Resources.Load<Sprite>("PokerCharacters/TheDealer");
+        if (dealerSprite != null)
+        {
+            // Image fills top portion; preserveAspect keeps proportions, black shows at edges
+            var imgRT = Ctr("DPImg", dpBox, new Vector2(0f, 16f), new Vector2(222f, 184f));
+            var img = imgRT.gameObject.AddComponent<Image>();
+            img.sprite = dealerSprite;
+            img.preserveAspect = true;
+        }
+
+        // Thin gold divider
+        var dpDiv = Rt("DPDiv", dpBox);
+        dpDiv.anchorMin = new Vector2(0.05f, 0f); dpDiv.anchorMax = new Vector2(0.95f, 0f);
+        dpDiv.pivot = new Vector2(0.5f, 1f); dpDiv.sizeDelta = new Vector2(0f, 1.5f);
+        dpDiv.anchoredPosition = new Vector2(0f, -82f);
+        dpDiv.gameObject.AddComponent<Image>().color = new Color(0.58f, 0.42f, 0.12f, 0.70f);
+
+        // Label at bottom
+        Txt(Ctr("DPLbl", dpBox, new Vector2(0f, -96f), new Vector2(218f, 26f)),
+            "♦  THE DEALER", 14, FontStyle.Bold,
+            new Color(0.76f, 0.58f, 0.18f), TextAnchor.MiddleCenter);
+
+        // Thin vertical separator between cards and portrait
+        var vSep = Rt("VSep", gp);
+        vSep.anchorMin = new Vector2(0.5f, 0.08f); vSep.anchorMax = new Vector2(0.5f, 0.88f);
+        vSep.pivot = new Vector2(0.5f, 0.5f); vSep.sizeDelta = new Vector2(1.5f, 0f);
+        vSep.anchoredPosition = new Vector2(325f, 0f);
+        vSep.gameObject.AddComponent<Image>().color = new Color(0.45f, 0.32f, 0.10f, 0.25f);
+
         // ── Dealer area ───────────────────────────────────────────────────────
         // Push dealer and player sections right to leave room for NPC box on left
         var dSec = Ctr("DSec", gp, new Vector2(90f, 210f), new Vector2(870f, 140f));
@@ -812,7 +850,7 @@ public class BlackjackScreen : MonoBehaviour
 
         // ── NPC box — left sidebar ────────────────────────────────────────────
         var npcBox = Ctr("NpcBox", gp, new Vector2(-435f, 52f), new Vector2(190f, 240f));
-        npcBox.gameObject.AddComponent<Image>().color = new Color(0.04f, 0.09f, 0.05f, 0.85f);
+        npcBox.gameObject.AddComponent<Image>().color = new Color(0.02f, 0.02f, 0.03f, 0.92f);
         var nb = Rt("NBrd", npcBox); nb.anchorMin = Vector2.zero; nb.anchorMax = Vector2.one;
         nb.sizeDelta = new Vector2(-4f, -4f); nb.anchoredPosition = Vector2.zero;
         nb.gameObject.AddComponent<Image>().color = new Color(0.20f, 0.32f, 0.20f, 0.20f);
@@ -877,7 +915,7 @@ public class BlackjackScreen : MonoBehaviour
     void BuildResultPanel(RectTransform panel)
     {
         var rp = Ctr("ResultPanel", panel, new Vector2(0f, -18f), new Vector2(600f, 360f));
-        rp.gameObject.AddComponent<Image>().color = new Color(0.04f, 0.09f, 0.05f, 0.97f);
+        rp.gameObject.AddComponent<Image>().color = new Color(0.02f, 0.02f, 0.03f, 0.98f);
         _resultPanel = rp.gameObject;
         _resultCG = rp.gameObject.AddComponent<CanvasGroup>();
 
