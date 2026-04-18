@@ -50,6 +50,7 @@ public class BlackjackScreen : MonoBehaviour
     bool _doubled;
 
     static readonly string[] ResourceNames = { "AMMO", "SCRAP", "MEDS" };
+    static readonly string[] ResourceIds   = { "ammo", "scrap", "meds" };
 
     static readonly string[] NpcWin =
     {
@@ -135,27 +136,21 @@ public class BlackjackScreen : MonoBehaviour
 
     void RefreshResources()
     {
-        var r = MiniGameResources.Instance;
-        if (r == null) return;
-        void Set(Text t, string prefix, int v) { if (t != null) t.text = prefix + "  " + v; }
-        Set(_bAmmo,  "AMMO",  r.ammo);  Set(_bScrap, "SCRAP", r.scrap); Set(_bMeds, "MEDS", r.meds);
-        Set(_gAmmo,  "AMMO",  r.ammo);  Set(_gScrap, "SCRAP", r.scrap); Set(_gMeds, "MEDS", r.meds);
+        if (Inventory.Instance == null) return;
+        void Set(Text t, string label, string id)
+        { if (t != null) t.text = label + "  " + Inventory.Instance.Count(id); }
+        Set(_bAmmo,  "AMMO",  "ammo");  Set(_bScrap, "SCRAP", "scrap"); Set(_bMeds, "MEDS", "meds");
+        Set(_gAmmo,  "AMMO",  "ammo");  Set(_gScrap, "SCRAP", "scrap"); Set(_gMeds, "MEDS", "meds");
     }
 
-    int GetResource(int t)
-    {
-        var r = MiniGameResources.Instance;
-        if (r == null) return 0;
-        return t == 0 ? r.ammo : t == 1 ? r.scrap : r.meds;
-    }
+    int GetResource(int t) =>
+        Inventory.Instance != null ? Inventory.Instance.Count(ResourceIds[t]) : 0;
 
     void AddResource(int t, int d)
     {
-        var r = MiniGameResources.Instance;
-        if (r == null) return;
-        if (t == 0) r.ammo  = Mathf.Max(0, r.ammo  + d);
-        if (t == 1) r.scrap = Mathf.Max(0, r.scrap + d);
-        if (t == 2) r.meds  = Mathf.Max(0, r.meds  + d);
+        if (Inventory.Instance == null || d == 0) return;
+        if (d > 0) Inventory.Instance.Add(ResourceIds[t], d);
+        else       Inventory.Instance.Remove(ResourceIds[t], -d);
     }
 
     void OnDeal()

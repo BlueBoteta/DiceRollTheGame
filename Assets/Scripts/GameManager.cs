@@ -42,7 +42,7 @@ public class GameManager : MonoBehaviour
             if (PlayerStats.Instance.hp < PlayerStats.Instance.maxHp)
                 PlayerStats.Instance.Heal(1);
             else
-                PlayerStats.Instance.AddAmmo(2);
+                Inventory.Instance?.Add("ammo", 2);
         }
         // Combat is handled by CombatScreen
     }

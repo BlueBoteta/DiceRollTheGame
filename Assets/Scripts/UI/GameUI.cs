@@ -30,7 +30,8 @@ public class GameUI : MonoBehaviour
         new GameObject("LootCarScreen").AddComponent<LootCarScreen>();
         new GameObject("LootVendingScreen").AddComponent<LootVendingScreen>();
         new GameObject("BlackjackScreen").AddComponent<BlackjackScreen>();
-        new GameObject("MiniGameResources").AddComponent<MiniGameResources>();
+        new GameObject("Inventory").AddComponent<Inventory>();
+        new GameObject("InventoryScreen").AddComponent<InventoryScreen>();
     }
 
     void Start()
@@ -44,6 +45,12 @@ public class GameUI : MonoBehaviour
         if (PlayerStats.Instance != null)
         {
             PlayerStats.Instance.OnStatsChanged += RefreshHUD;
+            RefreshHUD();
+        }
+
+        if (Inventory.Instance != null)
+        {
+            Inventory.Instance.OnChanged += RefreshHUD;
             RefreshHUD();
         }
 
@@ -61,6 +68,8 @@ public class GameUI : MonoBehaviour
         }
         if (PlayerStats.Instance != null)
             PlayerStats.Instance.OnStatsChanged -= RefreshHUD;
+        if (Inventory.Instance != null)
+            Inventory.Instance.OnChanged -= RefreshHUD;
     }
 
     // ── UI Construction ─────────────────────────────────────────────────────
@@ -182,7 +191,7 @@ public class GameUI : MonoBehaviour
 
         var hpGO = MakeRect("HP", hud);
         _hpText  = hpGO.gameObject.AddComponent<Text>();
-        _hpText.text      = "HP   10 / 10";
+        _hpText.text      = "HP   100 / 100";
         _hpText.alignment = TextAnchor.MiddleLeft;
         _hpText.fontSize  = 22;
         _hpText.color     = new Color(0.9f,0.25f,0.25f);
@@ -192,7 +201,7 @@ public class GameUI : MonoBehaviour
 
         var ammoGO = MakeRect("Ammo", hud);
         _ammoText  = ammoGO.gameObject.AddComponent<Text>();
-        _ammoText.text      = "Ammo  6";
+        _ammoText.text      = "Ammo  10";
         _ammoText.alignment = TextAnchor.MiddleLeft;
         _ammoText.fontSize  = 22;
         _ammoText.color     = new Color(0.9f,0.75f,0.3f);
@@ -224,10 +233,13 @@ public class GameUI : MonoBehaviour
 
     void RefreshHUD()
     {
-        if (PlayerStats.Instance == null) return;
-        var s = PlayerStats.Instance;
-        if (_hpText   != null) _hpText.text   = "HP   " + s.hp + " / " + s.maxHp;
-        if (_ammoText != null) _ammoText.text  = "Ammo  " + s.ammo;
+        if (PlayerStats.Instance != null)
+        {
+            var s = PlayerStats.Instance;
+            if (_hpText != null) _hpText.text = "HP   " + s.hp + " / " + s.maxHp;
+        }
+        if (_ammoText != null)
+            _ammoText.text = "Ammo  " + (Inventory.Instance != null ? Inventory.Instance.Count("ammo") : 0);
     }
 
     void ShowTileNotification(TileType type)

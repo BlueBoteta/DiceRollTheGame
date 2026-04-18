@@ -93,7 +93,7 @@ public class CombatScreen : MonoBehaviour
         if (_enemyHp <= 0)
         {
             Log("-- " + enemyName + " defeated! +1 Ammo --");
-            PlayerStats.Instance?.AddAmmo(1);
+            Inventory.Instance?.Add("ammo", 1);
             _exitBtn.interactable = true;
         }
         else

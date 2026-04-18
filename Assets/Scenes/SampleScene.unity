@@ -227,9 +227,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88f1fedb6bf2ce94ea2146471e6f2a43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
-  maxHp: 10
-  hp: 10
-  ammo: 6
+  maxHp: 100
+  hp: 100
 --- !u!4 &401731291
 Transform:
   m_ObjectHideFlags: 0
@@ -564,6 +563,7 @@ MonoBehaviour:
   lootTileColor: {r: 0.35, g: 0.28, b: 0.08, a: 1}
   bossTileColor: {r: 0.3, g: 0.05, b: 0.35, a: 1}
   storyTileColor: {r: 0.1, g: 0.25, b: 0.35, a: 1}
+  blackjackTileColor: {r: 0.08, g: 0.22, b: 0.12, a: 1}
   tileHighlightColor: {r: 0.19999999, g: 1, b: 0.91987956, a: 0.41960785}
   combatChance: 40
   lootChance: 30
