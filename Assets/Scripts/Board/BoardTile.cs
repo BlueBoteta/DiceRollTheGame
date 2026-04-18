@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public enum TileType { Normal, Combat, Loot, Story, Boss }
+public enum TileType { Normal, Combat, Loot, Story, Boss, Blackjack }
 
 public class BoardTile : MonoBehaviour
 {

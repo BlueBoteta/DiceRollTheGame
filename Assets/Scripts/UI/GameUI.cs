@@ -29,6 +29,8 @@ public class GameUI : MonoBehaviour
         new GameObject("StoryScreen").AddComponent<StoryScreen>();
         new GameObject("LootCarScreen").AddComponent<LootCarScreen>();
         new GameObject("LootVendingScreen").AddComponent<LootVendingScreen>();
+        new GameObject("BlackjackScreen").AddComponent<BlackjackScreen>();
+        new GameObject("MiniGameResources").AddComponent<MiniGameResources>();
     }
 
     void Start()
@@ -335,6 +337,11 @@ public class GameUI : MonoBehaviour
             {
                 yield return new WaitForSeconds(0.3f);
                 yield return StartCoroutine(StoryScreen.Instance.Open());
+            }
+            else if (landed.tileType == TileType.Blackjack && BlackjackScreen.Instance != null)
+            {
+                yield return new WaitForSeconds(0.3f);
+                yield return StartCoroutine(BlackjackScreen.Instance.Open());
             }
             else if (landed.tileType == TileType.Loot)
             {
