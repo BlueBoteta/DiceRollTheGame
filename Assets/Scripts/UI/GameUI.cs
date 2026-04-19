@@ -16,6 +16,21 @@ public class GameUI : MonoBehaviour
     Text _hpText;
     Text _ammoText;
 
+    // HUD equipment bar
+    static readonly string[] EquipLabels = { "PRIMARY", "SECONDARY", "DEFENSE", "UTILITY" };
+    static readonly Color[]  EquipSlotColors = {
+        new Color(0.88f, 0.22f, 0.22f),
+        new Color(0.90f, 0.55f, 0.15f),
+        new Color(0.20f, 0.55f, 0.88f),
+        new Color(0.15f, 0.75f, 0.68f),
+    };
+    Image[]       _equipSlotBg   = new Image[4];
+    Text[]        _equipSlotName = new Text[4];
+    Image[]       _equipDots     = new Image[4];
+    RectTransform _hpBarFill;
+    Image         _hpBarFillImg;
+    Coroutine     _hpAnimCo;
+
     // Tile notification
     Text _notifText;
     Coroutine _notifRoutine;
@@ -24,6 +39,7 @@ public class GameUI : MonoBehaviour
     {
         EnsureEventSystem();
         BuildUI();
+        new GameObject("PlayerEquipment").AddComponent<PlayerEquipment>();
         new GameObject("CombatScreen").AddComponent<CombatScreen>();
         new GameObject("GameOverScreen").AddComponent<GameOverScreen>();
         new GameObject("StoryScreen").AddComponent<StoryScreen>();
@@ -56,6 +72,9 @@ public class GameUI : MonoBehaviour
             RefreshHUD();
         }
 
+        if (PlayerEquipment.Instance != null)
+            PlayerEquipment.Instance.OnChanged += RefreshEquipmentBar;
+
         if (PlayerToken.Instance != null)
             PlayerToken.Instance.OnLandedOnTile += tile =>
                 GameManager.Instance?.HandleTileLanding(tile);
@@ -72,6 +91,8 @@ public class GameUI : MonoBehaviour
             PlayerStats.Instance.OnStatsChanged -= RefreshHUD;
         if (Inventory.Instance != null)
             Inventory.Instance.OnChanged -= RefreshHUD;
+        if (PlayerEquipment.Instance != null)
+            PlayerEquipment.Instance.OnChanged -= RefreshEquipmentBar;
     }
 
     // ── UI Construction ─────────────────────────────────────────────────────
@@ -96,7 +117,7 @@ public class GameUI : MonoBehaviour
         canvasGO.AddComponent<GraphicRaycaster>();
 
         BuildDicePanel(canvasGO.transform);
-        BuildHUD(canvasGO.transform);
+        BuildHUDPanel(canvasGO.transform);
         BuildNotification(canvasGO.transform);
     }
 
@@ -183,33 +204,132 @@ public class GameUI : MonoBehaviour
         });
     }
 
-    void BuildHUD(Transform canvas)
+    void BuildHUDPanel(Transform canvas)
     {
-        var hud    = MakeRect("HUD", canvas);
-        var hudImg = hud.gameObject.AddComponent<Image>();
-        hudImg.color = new Color(0.08f,0.08f,0.12f,0.85f);
-        Anchor(hud, new Vector2(0,1), new Vector2(0,1), new Vector2(0,1),
-               new Vector2(20,-20), new Vector2(160,80));
+        const float pad   = 8f;
+        const float panW  = 280f;
+        const float hpH   = 22f;
+        const float ammoH = 22f;
+        const float slotH = 36f;
 
-        var hpGO = MakeRect("HP", hud);
-        _hpText  = hpGO.gameObject.AddComponent<Text>();
-        _hpText.text      = "HP   100 / 100";
-        _hpText.alignment = TextAnchor.MiddleLeft;
-        _hpText.fontSize  = 22;
-        _hpText.color     = new Color(0.9f,0.25f,0.25f);
-        _hpText.font      = DefaultFont();
-        Anchor(hpGO, new Vector2(0,1), new Vector2(1,1), new Vector2(0,1),
-               new Vector2(14,-8), new Vector2(-14,32));
+        float yHp    = 11f;
+        float yAmmo  = yHp + hpH + 5f;
+        float ySep   = yAmmo + ammoH + 4f;
+        float ySlots = ySep + 1f + 6f;
+        float panH   = ySlots + 4 * slotH + pad;
 
-        var ammoGO = MakeRect("Ammo", hud);
-        _ammoText  = ammoGO.gameObject.AddComponent<Text>();
-        _ammoText.text      = "Ammo  10";
-        _ammoText.alignment = TextAnchor.MiddleLeft;
-        _ammoText.fontSize  = 22;
-        _ammoText.color     = new Color(0.9f,0.75f,0.3f);
-        _ammoText.font      = DefaultFont();
-        Anchor(ammoGO, new Vector2(0,0), new Vector2(1,0), new Vector2(0,0),
-               new Vector2(14,8), new Vector2(-14,32));
+        var panel = MakeRect("HUDPanel", canvas);
+        panel.gameObject.AddComponent<Image>().color = new Color(0.05f, 0.05f, 0.08f, 0.92f);
+        Anchor(panel, new Vector2(0,1), new Vector2(0,1), new Vector2(0,1),
+               new Vector2(20,-20), new Vector2(panW, panH));
+
+        // Top accent stripe
+        var acc = MakeRect("Accent", panel);
+        Anchor(acc, new Vector2(0,1), new Vector2(1,1), new Vector2(0.5f,1),
+               Vector2.zero, new Vector2(0, 3));
+        acc.gameObject.AddComponent<Image>().color = new Color(0.60f, 0.08f, 0.08f);
+
+        // HP bar track
+        var hpTrack = MakeRect("HpTrack", panel);
+        Anchor(hpTrack, new Vector2(0,1), new Vector2(1,1), new Vector2(0,1),
+               new Vector2(pad, -yHp), new Vector2(-pad*2, hpH));
+        hpTrack.gameObject.AddComponent<Image>().color = new Color(0.12f, 0.04f, 0.04f);
+
+        // HP fill (width animated via anchorMax.x)
+        var fill = MakeRect("HpFill", hpTrack);
+        fill.anchorMin = Vector2.zero; fill.anchorMax = Vector2.one; fill.sizeDelta = Vector2.zero;
+        _hpBarFillImg = fill.gameObject.AddComponent<Image>();
+        _hpBarFillImg.color = new Color(0.15f, 0.82f, 0.28f);
+        _hpBarFill = fill;
+
+        // "HP" label overlaid on bar left
+        var hpLbl = MakeRect("HpLbl", hpTrack);
+        hpLbl.anchorMin = new Vector2(0,0); hpLbl.anchorMax = new Vector2(0.4f,1);
+        hpLbl.sizeDelta = Vector2.zero; hpLbl.anchoredPosition = new Vector2(5,0);
+        var hpLblT = hpLbl.gameObject.AddComponent<Text>();
+        hpLblT.text = "HP"; hpLblT.font = DefaultFont(); hpLblT.fontSize = 12;
+        hpLblT.fontStyle = FontStyle.Bold; hpLblT.alignment = TextAnchor.MiddleLeft;
+        hpLblT.color = new Color(1f,1f,1f,0.50f);
+
+        // HP numbers overlaid on bar right
+        var hpNum = MakeRect("HpNum", hpTrack);
+        hpNum.anchorMin = new Vector2(0.55f,0); hpNum.anchorMax = new Vector2(1,1);
+        hpNum.sizeDelta = new Vector2(-4,0); hpNum.anchoredPosition = Vector2.zero;
+        _hpText = hpNum.gameObject.AddComponent<Text>();
+        _hpText.text = "100 / 100"; _hpText.font = DefaultFont(); _hpText.fontSize = 12;
+        _hpText.fontStyle = FontStyle.Bold; _hpText.alignment = TextAnchor.MiddleRight;
+        _hpText.color = new Color(1f,1f,1f,0.80f);
+
+        // Ammo row
+        var ammo = MakeRect("Ammo", panel);
+        Anchor(ammo, new Vector2(0,1), new Vector2(1,1), new Vector2(0,1),
+               new Vector2(pad, -yAmmo), new Vector2(-pad*2, ammoH));
+        _ammoText = ammo.gameObject.AddComponent<Text>();
+        _ammoText.text = "AMMO  0"; _ammoText.font = DefaultFont();
+        _ammoText.fontSize = 15; _ammoText.alignment = TextAnchor.MiddleLeft;
+        _ammoText.color = new Color(0.88f, 0.72f, 0.28f);
+
+        // Separator
+        var sep = MakeRect("Sep", panel);
+        Anchor(sep, new Vector2(0,1), new Vector2(1,1), new Vector2(0.5f,1),
+               new Vector2(0,-ySep), new Vector2(-pad*2, 1));
+        sep.gameObject.AddComponent<Image>().color = new Color(0.20f, 0.08f, 0.08f, 0.70f);
+
+        // Equipment rows
+        for (int i = 0; i < 4; i++)
+        {
+            float y = ySlots + i * slotH;
+            var slot = MakeRect("Slot" + i, panel);
+            _equipSlotBg[i] = slot.gameObject.AddComponent<Image>();
+            _equipSlotBg[i].color = Color.clear;
+            Anchor(slot, new Vector2(0,1), new Vector2(1,1), new Vector2(0,1),
+                   new Vector2(0,-y), new Vector2(0, slotH));
+
+            // Colored indicator dot
+            var dot = MakeRect("Dot", slot);
+            Anchor(dot, new Vector2(0,0.5f), new Vector2(0,0.5f), new Vector2(0.5f,0.5f),
+                   new Vector2(14,0), new Vector2(7,7));
+            _equipDots[i] = dot.gameObject.AddComponent<Image>();
+            _equipDots[i].color = new Color(0.18f, 0.18f, 0.22f);
+
+            // Slot label ("PRIMARY" etc)
+            var lbl = MakeRect("Lbl", slot);
+            Anchor(lbl, new Vector2(0,0), new Vector2(0,1), new Vector2(0,0.5f),
+                   new Vector2(25,0), new Vector2(82,0));
+            var lblT = lbl.gameObject.AddComponent<Text>();
+            lblT.text = EquipLabels[i]; lblT.font = DefaultFont();
+            lblT.fontSize = 10; lblT.alignment = TextAnchor.MiddleLeft;
+            lblT.color = new Color(0.30f, 0.30f, 0.38f);
+
+            // Item name
+            var name = MakeRect("Name", slot);
+            Anchor(name, new Vector2(0,0), new Vector2(1,1), new Vector2(0,0.5f),
+                   new Vector2(108,0), new Vector2(-116,0));
+            _equipSlotName[i] = name.gameObject.AddComponent<Text>();
+            _equipSlotName[i].text = "—"; _equipSlotName[i].font = DefaultFont();
+            _equipSlotName[i].fontSize = 15; _equipSlotName[i].fontStyle = FontStyle.Bold;
+            _equipSlotName[i].alignment = TextAnchor.MiddleLeft;
+            _equipSlotName[i].color = new Color(0.22f, 0.22f, 0.28f);
+        }
+    }
+
+    void RefreshEquipmentBar()
+    {
+        if (PlayerEquipment.Instance == null) return;
+        var equip = PlayerEquipment.Instance;
+        for (int i = 0; i < 4; i++)
+        {
+            var item = equip.Get((EquipSlot)i);
+            bool  has    = item != null;
+            Color accent = EquipSlotColors[i];
+            _equipSlotName[i].text  = has ? item.displayName.ToUpper() : "—";
+            _equipSlotName[i].color = has ? accent : new Color(0.22f, 0.22f, 0.28f);
+            if (_equipDots[i] != null)
+                _equipDots[i].color = has ? accent : new Color(0.18f, 0.18f, 0.22f);
+            _equipSlotBg[i].color   = has
+                ? new Color(accent.r * 0.12f, accent.g * 0.12f, accent.b * 0.12f, 0.40f)
+                : Color.clear;
+        }
     }
 
     void BuildNotification(Transform canvas)
@@ -238,10 +358,33 @@ public class GameUI : MonoBehaviour
         if (PlayerStats.Instance != null)
         {
             var s = PlayerStats.Instance;
-            if (_hpText != null) _hpText.text = "HP   " + s.hp + " / " + s.maxHp;
+            if (_hpText != null) _hpText.text = s.hp + " / " + s.maxHp;
+            if (_hpBarFill != null)
+            {
+                float target = s.maxHp > 0 ? (float)s.hp / s.maxHp : 0f;
+                if (_hpAnimCo != null) StopCoroutine(_hpAnimCo);
+                _hpAnimCo = StartCoroutine(AnimateHpBar(target));
+            }
         }
         if (_ammoText != null)
-            _ammoText.text = "Ammo  " + (Inventory.Instance != null ? Inventory.Instance.Count("ammo") : 0);
+            _ammoText.text = "AMMO  " + (Inventory.Instance?.Count("ammo") ?? 0);
+    }
+
+    IEnumerator AnimateHpBar(float target)
+    {
+        float from = _hpBarFill.anchorMax.x;
+        float t = 0f, dur = 0.38f;
+        while (t < dur)
+        {
+            t += Time.deltaTime;
+            float v = Mathf.Clamp01(Mathf.Lerp(from, target, Mathf.SmoothStep(0f, 1f, t / dur)));
+            _hpBarFill.anchorMax = new Vector2(v, 1f);
+            _hpBarFillImg.color  = v > 0.5f
+                ? Color.Lerp(new Color(0.88f,0.78f,0.10f), new Color(0.15f,0.82f,0.28f), (v-0.5f)*2f)
+                : Color.Lerp(new Color(0.85f,0.12f,0.12f), new Color(0.88f,0.78f,0.10f), v*2f);
+            yield return null;
+        }
+        _hpBarFill.anchorMax = new Vector2(target, 1f);
     }
 
     void ShowTileNotification(TileType type)

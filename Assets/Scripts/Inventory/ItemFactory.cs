@@ -16,14 +16,14 @@ public static class ItemFactory
             "food"    => new InventoryItem("food",    "Food",             ItemCategory.Consumable,  false, quantity, 1),
             "pills"   => new InventoryItem("pills",   "Pills",            ItemCategory.Consumable,  false, quantity, 1),
 
-            // ── Utility Tools (limited charges, exploration only) ─────────────
+            // ── Utility Tools ────────────────────────────────────────────────
             "lockpick"  => new InventoryItem("lockpick",  "Lockpick",   ItemCategory.UtilityTool, false, quantity, 3),
-            "flashlight"=> new InventoryItem("flashlight","Flashlight", ItemCategory.UtilityTool, false, quantity, 1),
+            "flashlight"=> new InventoryItem("flashlight","Flashlight", ItemCategory.UtilityTool, false, quantity, 1, EquipSlot.Utility),
 
-            // ── Weapons (stored here, equipped via Armory — not used from inv) ─
-            "pistol"  => new InventoryItem("pistol",  "Pistol",           ItemCategory.Weapon,      false, quantity, 1),
-            "shotgun" => new InventoryItem("shotgun", "Shotgun",          ItemCategory.Weapon,      false, quantity, 1),
-            "knife"   => new InventoryItem("knife",   "Knife",            ItemCategory.Weapon,      false, quantity, 1),
+            // ── Weapons — equip from inventory into HUD slots ─────────────────
+            "pistol"  => new InventoryItem("pistol",  "Pistol",  ItemCategory.Weapon, false, quantity, 1, EquipSlot.Primary),
+            "shotgun" => new InventoryItem("shotgun", "Shotgun", ItemCategory.Weapon, false, quantity, 1, EquipSlot.Primary),
+            "knife"   => new InventoryItem("knife",   "Knife",   ItemCategory.Weapon, false, quantity, 1, EquipSlot.Secondary),
 
             _         => null
         };

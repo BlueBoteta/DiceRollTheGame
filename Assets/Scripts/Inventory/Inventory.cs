@@ -25,6 +25,7 @@ public class Inventory : MonoBehaviour
         Add("scrap",   1);
         Add("meds",    1);
         Add("battery", 1);
+        Add("knife",   1);
     }
 
     // ── Queries ───────────────────────────────────────────────────────────────

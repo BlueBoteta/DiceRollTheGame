@@ -23,8 +23,12 @@ public class CombatScreen : MonoBehaviour
     Text   _lootFoundText;
     Button _exitBtn;
 
-    bool _exitPressed;
-    int  _enemyHp, _enemyMaxHp;
+    bool      _exitPressed;
+    int       _enemyHp, _enemyMaxHp;
+    Image     _playerHpFillImg;
+    Image     _enemyHpFillImg;
+    Coroutine _playerBarCo;
+    Coroutine _enemyBarCo;
 
     // ── Attack Move Definition ────────────────────────────────────────────────
 
@@ -44,22 +48,37 @@ public class CombatScreen : MonoBehaviour
     static readonly Color ColPurple    = new Color(0.75f,0.15f, 0.85f);
     static readonly Color ColGreen     = new Color(0.28f,1f,    0.38f);
 
-    // Gun moves — cost ammo
-    static readonly AttackMove[] GunMoves =
+    // Pistol moves
+    static readonly AttackMove[] PistolMoves =
     {
-        new AttackMove("BANG!",    "fire",       3,  7, ColGold,   ammo: 1),
+        new AttackMove("BANG!",    "fire at",    3,  7, ColGold,   ammo: 1),
         new AttackMove("FIRE!",    "shoot",      4,  8, ColGold,   ammo: 1),
         new AttackMove("UNLOAD!",  "unload on",  5, 10, ColGold,   ammo: 2),
     };
-    // Melee moves — free
-    static readonly AttackMove[] MeleeMoves =
+    // Shotgun moves — higher damage, more ammo
+    static readonly AttackMove[] ShotgunMoves =
+    {
+        new AttackMove("PUMP!",    "pump-shot",  7, 12, ColGold,   ammo: 1),
+        new AttackMove("BLAST!",   "blast",      9, 15, ColGold,   ammo: 2),
+    };
+    // Knife moves — free
+    static readonly AttackMove[] KnifeMoves =
     {
         new AttackMove("STAB!",    "stab",       4,  9, ColOrange),
         new AttackMove("SLASH!",   "slash",      3,  8, ColOrange),
     };
-    // Rare — 8% chance when ammo > 0, costs 1 ammo
+    // No secondary equipped — bare fists
+    static readonly AttackMove[] FistMoves =
+    {
+        new AttackMove("PUNCH!",   "punch",      1,  3, ColOrange),
+        new AttackMove("SHOVE!",   "shove",      1,  4, ColOrange),
+    };
+    // Headshot — 8% chance with any primary, costs 1 ammo
     static readonly AttackMove HeadshotMove =
         new AttackMove("HEADSHOT!", "headshot", 12, 18, new Color(1f, 0.98f, 0.35f), ammo: 1);
+    // Shotgun point-blank — 6% chance, costs 2 ammo
+    static readonly AttackMove PointBlankMove =
+        new AttackMove("POINT BLANK!", "fires point-blank at", 15, 22, new Color(1f, 0.95f, 0.2f), ammo: 2);
 
     // Enemy tiers — chosen by lap count
     static readonly AttackMove[] EnemyTier1 =   // laps 1–2: weak, slow
@@ -98,9 +117,9 @@ public class CombatScreen : MonoBehaviour
     // Kill flash lines
     static readonly string[] KillLines = { "GOES DOWN.", "STAYS DOWN.", "NEUTRALIZED.", "ONE LESS." };
 
-    // Loot
-    static readonly string[] CombatLootPool = { "ammo","ammo","ammo","scrap","scrap","food","meds","pills" };
-    static readonly string[] BossLootPool   = { "ammo","ammo","scrap","medkit","meds","pills","lockpick","battery" };
+    // Loot pools
+    static readonly string[] CombatLootPool = { "ammo","ammo","ammo","scrap","scrap","food","meds","pills","knife" };
+    static readonly string[] BossLootPool   = { "ammo","ammo","scrap","medkit","meds","pills","lockpick","battery","pistol" };
 
     void Awake()
     {
@@ -217,13 +236,35 @@ public class CombatScreen : MonoBehaviour
 
     static AttackMove PickPlayerMove()
     {
-        int ammo = Inventory.Instance != null ? Inventory.Instance.Count("ammo") : 0;
-        if (ammo <= 0)
-            return MeleeMoves[Random.Range(0, MeleeMoves.Length)];
-        if (Random.value < 0.08f) return HeadshotMove;
-        return Random.value < 0.65f
-            ? GunMoves[Random.Range(0, GunMoves.Length)]
-            : MeleeMoves[Random.Range(0, MeleeMoves.Length)];
+        int ammo = Inventory.Instance?.Count("ammo") ?? 0;
+        var equip     = PlayerEquipment.Instance;
+        var primary   = equip?.Get(EquipSlot.Primary);
+        var secondary = equip?.Get(EquipSlot.Secondary);
+
+        AttackMove[] meleeMoves = secondary?.id == "knife" ? KnifeMoves : FistMoves;
+
+        // No primary or out of ammo — melee only
+        if (primary == null || ammo <= 0)
+            return meleeMoves[Random.Range(0, meleeMoves.Length)];
+
+        // Rare specials
+        if (primary.id == "shotgun")
+        {
+            if (ammo >= 2 && Random.value < 0.06f) return PointBlankMove;
+        }
+        else if (Random.value < 0.08f) return HeadshotMove;
+
+        // Normal round: 65% gun / 35% melee
+        if (Random.value < 0.65f)
+        {
+            var gunMoves = primary.id == "shotgun" ? ShotgunMoves : PistolMoves;
+            // Filter moves the player has ammo for
+            var valid = new System.Collections.Generic.List<AttackMove>();
+            foreach (var m in gunMoves)
+                if (ammo >= m.ammoCost) valid.Add(m);
+            if (valid.Count > 0) return valid[Random.Range(0, valid.Count)];
+        }
+        return meleeMoves[Random.Range(0, meleeMoves.Length)];
     }
 
     static string PlayerReaction(int dmg)
@@ -314,16 +355,36 @@ public class CombatScreen : MonoBehaviour
     void RefreshBars()
     {
         float eRatio = _enemyMaxHp > 0 ? (float)_enemyHp / _enemyMaxHp : 0f;
-        _enemyHpFill.anchorMax = new Vector2(Mathf.Clamp01(eRatio), 1f);
+        if (_enemyBarCo != null) StopCoroutine(_enemyBarCo);
+        _enemyBarCo = StartCoroutine(AnimBar(_enemyHpFill, _enemyHpFillImg, eRatio, false));
         _enemyHpText.text = _enemyHp + " / " + _enemyMaxHp;
 
         if (PlayerStats.Instance != null)
         {
             float pRatio = PlayerStats.Instance.maxHp > 0
                 ? (float)PlayerStats.Instance.hp / PlayerStats.Instance.maxHp : 0f;
-            _playerHpFill.anchorMax = new Vector2(Mathf.Clamp01(pRatio), 1f);
+            if (_playerBarCo != null) StopCoroutine(_playerBarCo);
+            _playerBarCo = StartCoroutine(AnimBar(_playerHpFill, _playerHpFillImg, pRatio, true));
             _playerHpText.text = PlayerStats.Instance.hp + " / " + PlayerStats.Instance.maxHp;
         }
+    }
+
+    IEnumerator AnimBar(RectTransform fill, Image img, float target, bool isPlayer)
+    {
+        float from = fill.anchorMax.x;
+        float t = 0f, dur = 0.28f;
+        while (t < dur)
+        {
+            t += Time.deltaTime;
+            float v = Mathf.Clamp01(Mathf.Lerp(from, target, Mathf.SmoothStep(0f,1f,t/dur)));
+            fill.anchorMax = new Vector2(v, 1f);
+            if (isPlayer && img != null)
+                img.color = v > 0.5f
+                    ? Color.Lerp(new Color(0.9f,0.78f,0.1f), new Color(0.2f,0.75f,0.3f), (v-0.5f)*2f)
+                    : Color.Lerp(new Color(0.85f,0.12f,0.12f), new Color(0.9f,0.78f,0.1f), v*2f);
+            yield return null;
+        }
+        fill.anchorMax = new Vector2(target, 1f);
     }
 
     void Log(string msg) => _logText.text += msg + "\n";
@@ -362,6 +423,8 @@ public class CombatScreen : MonoBehaviour
                        out _playerIcon, out _playerHpFill, out _playerHpText, out _);
         BuildCombatant(panel, "Zombie", new Color(0.85f, 0.15f, 0.15f), new Vector2(230, 42),
                        out _enemyIcon,  out _enemyHpFill,  out _enemyHpText,  out _enemyNameTxt);
+        _playerHpFillImg = _playerHpFill.GetComponent<Image>();
+        _enemyHpFillImg  = _enemyHpFill.GetComponent<Image>();
 
         // VS — dim, sits behind flash
         AddText(Make("VS", panel), "VS", 30, FontStyle.Bold,

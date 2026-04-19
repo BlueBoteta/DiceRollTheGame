@@ -63,13 +63,18 @@ public class InventoryScreen : MonoBehaviour
     void Update()
     {
         if (_animating) return;
-        if (!UnityEngine.InputSystem.Keyboard.current.tabKey.wasPressedThisFrame) return;
+        var kb = UnityEngine.InputSystem.Keyboard.current;
 
-        if (_canvas.gameObject.activeSelf) { StartCoroutine(CloseAnim()); return; }
+        if (_canvas.gameObject.activeSelf)
+        {
+            if (kb.tabKey.wasPressedThisFrame || kb.escapeKey.wasPressedThisFrame)
+                StartCoroutine(CloseAnim());
+            return;
+        }
 
+        if (!kb.tabKey.wasPressedThisFrame) return;
         foreach (var c in FindObjectsOfType<Canvas>())
             if (c != _canvas && c.sortingOrder > 15 && c.gameObject.activeSelf) return;
-
         StartCoroutine(OpenAnim());
     }
 
@@ -222,12 +227,26 @@ public class InventoryScreen : MonoBehaviour
 
         _dropBtn.interactable = true;
 
-        bool isHeal = IsHealingItem(item.id);
-        bool canUse = item.category == ItemCategory.Consumable ||
+        bool isHeal     = IsHealingItem(item.id);
+        bool isEquipItem = item.equipSlot.HasValue;
+        bool isEquipped  = isEquipItem &&
+            PlayerEquipment.Instance?.Get(item.equipSlot.Value)?.id == item.id;
+
+        bool canUse = isEquipItem ||
+                      item.category == ItemCategory.Consumable ||
                       item.category == ItemCategory.UtilityTool || isHeal;
         _useBtn.interactable = canUse;
 
-        _useBtnTxt.text = isHeal ? "USE" : item.category == ItemCategory.UtilityTool ? "USE" : "USE";
+        if (isEquipItem)
+        {
+            _useBtnTxt.text  = isEquipped ? "UNEQUIP" : "EQUIP";
+            _useBtnTxt.color = isEquipped ? new Color(0.7f,0.7f,0.7f) : new Color(0.45f,1f,0.55f);
+        }
+        else
+        {
+            _useBtnTxt.text  = "USE";
+            _useBtnTxt.color = Color.white;
+        }
     }
 
     void UseSelected()
@@ -235,6 +254,9 @@ public class InventoryScreen : MonoBehaviour
         if (_selectedSlot < 0 || Inventory.Instance == null) return;
         var item = Inventory.Instance.GetSlot(_selectedSlot);
         if (item == null) return;
+
+        // Equipment items → equip or unequip
+        if (item.equipSlot.HasValue) { HandleEquip(item); return; }
 
         var (consumed, feedback) = ApplyUseEffect(item);
         if (consumed)
@@ -245,6 +267,33 @@ public class InventoryScreen : MonoBehaviour
         }
         else if (!string.IsNullOrEmpty(feedback))
             ShowFeedback(feedback, new Color(1f, 0.5f, 0.2f));
+    }
+
+    void HandleEquip(InventoryItem item)
+    {
+        var equip = PlayerEquipment.Instance;
+        if (equip == null) return;
+        var slot    = item.equipSlot.Value;
+        var current = equip.Get(slot);
+
+        if (current != null && current.id == item.id)
+        {
+            // Unequip: return item to inventory
+            var unequipped = equip.Unequip(slot);
+            if (unequipped != null) Inventory.Instance.Add(unequipped.id, unequipped.quantity);
+            SelectSlot(-1);
+            ShowFeedback("Unequipped " + item.displayName, new Color(0.7f, 0.7f, 0.7f));
+        }
+        else
+        {
+            // Equip: remove from inventory, displace current into inventory
+            var equipped   = item.Clone();
+            Inventory.Instance.Remove(item.id, 1);
+            var displaced  = equip.Equip(slot, equipped);
+            if (displaced != null) Inventory.Instance.Add(displaced.id, displaced.quantity);
+            SelectSlot(-1);
+            ShowFeedback("Equipped " + item.displayName, new Color(0.45f, 1f, 0.55f));
+        }
     }
 
     void DropSelected()
@@ -393,11 +442,29 @@ public class InventoryScreen : MonoBehaviour
         titleTxt.color = new Color(0.88f, 0.78f, 0.42f); titleTxt.font = DefaultFont();
 
         var hintRT = MakeRect("Hint", _panelRT);
-        CenterAnchor(hintRT, new Vector2(370, 220), new Vector2(100, 30));
+        CenterAnchor(hintRT, new Vector2(330, 220), new Vector2(130, 30));
         var hintTxt = hintRT.gameObject.AddComponent<Text>();
-        hintTxt.text = "[TAB]"; hintTxt.alignment = TextAnchor.MiddleRight;
-        hintTxt.fontSize = 18; hintTxt.color = new Color(0.38f, 0.38f, 0.45f);
+        hintTxt.text = "[TAB] / [ESC]"; hintTxt.alignment = TextAnchor.MiddleRight;
+        hintTxt.fontSize = 16; hintTxt.color = new Color(0.35f, 0.35f, 0.42f);
         hintTxt.font = DefaultFont();
+
+        // X close button
+        var xRT  = CenterRect("CloseBtn", _panelRT, new Vector2(406, 218), new Vector2(38, 38));
+        var xImg = xRT.gameObject.AddComponent<Image>();
+        xImg.color = new Color(0.16f, 0.06f, 0.06f);
+        var xBtn = xRT.gameObject.AddComponent<Button>();
+        var xc   = xBtn.colors;
+        xc.highlightedColor = new Color(0.30f, 0.10f, 0.10f);
+        xc.pressedColor     = new Color(0.09f, 0.03f, 0.03f);
+        xBtn.colors = xc;
+        xBtn.onClick.AddListener(() => { if (!_animating) StartCoroutine(CloseAnim()); });
+        var xLblRT  = MakeRect("Lbl", xRT);
+        xLblRT.anchorMin = xLblRT.anchorMax = xLblRT.pivot = new Vector2(0.5f,0.5f);
+        xLblRT.anchoredPosition = Vector2.zero; xLblRT.sizeDelta = new Vector2(38,38);
+        var xLblT = xLblRT.gameObject.AddComponent<Text>();
+        xLblT.text = "\u00d7"; xLblT.font = DefaultFont(); xLblT.fontSize = 26;
+        xLblT.fontStyle = FontStyle.Bold; xLblT.alignment = TextAnchor.MiddleCenter;
+        xLblT.color = new Color(0.72f, 0.28f, 0.28f);
 
         // Separator under title
         var sep = MakeRect("Sep", _panelRT);
