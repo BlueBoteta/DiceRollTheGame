@@ -17,7 +17,8 @@ public static class ItemFactory
             "pills"   => new InventoryItem("pills",   "Pills",            ItemCategory.Consumable,  false, quantity, 1),
 
             // ── Utility Tools (limited charges, exploration only) ─────────────
-            "lockpick"=> new InventoryItem("lockpick","Lockpick",         ItemCategory.UtilityTool, false, quantity, 3),
+            "lockpick"  => new InventoryItem("lockpick",  "Lockpick",   ItemCategory.UtilityTool, false, quantity, 3),
+            "flashlight"=> new InventoryItem("flashlight","Flashlight", ItemCategory.UtilityTool, false, quantity, 1),
 
             // ── Weapons (stored here, equipped via Armory — not used from inv) ─
             "pistol"  => new InventoryItem("pistol",  "Pistol",           ItemCategory.Weapon,      false, quantity, 1),
