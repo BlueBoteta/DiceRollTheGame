@@ -272,8 +272,8 @@ public class GameUI : MonoBehaviour
         // Separator
         var sep = MakeRect("Sep", panel);
         Anchor(sep, new Vector2(0,1), new Vector2(1,1), new Vector2(0.5f,1),
-               new Vector2(0,-ySep), new Vector2(-pad*2, 1));
-        sep.gameObject.AddComponent<Image>().color = new Color(0.20f, 0.08f, 0.08f, 0.70f);
+               new Vector2(0,-ySep), new Vector2(-pad*2, 2));
+        sep.gameObject.AddComponent<Image>().color = new Color(0.50f, 0.42f, 0.18f, 0.80f);
 
         // Equipment rows
         for (int i = 0; i < 4; i++)
@@ -290,7 +290,7 @@ public class GameUI : MonoBehaviour
             Anchor(dot, new Vector2(0,0.5f), new Vector2(0,0.5f), new Vector2(0.5f,0.5f),
                    new Vector2(14,0), new Vector2(7,7));
             _equipDots[i] = dot.gameObject.AddComponent<Image>();
-            _equipDots[i].color = new Color(0.18f, 0.18f, 0.22f);
+            _equipDots[i].color = new Color(0.35f, 0.35f, 0.42f);
 
             // Slot label ("PRIMARY" etc)
             var lbl = MakeRect("Lbl", slot);
@@ -298,8 +298,8 @@ public class GameUI : MonoBehaviour
                    new Vector2(25,0), new Vector2(82,0));
             var lblT = lbl.gameObject.AddComponent<Text>();
             lblT.text = EquipLabels[i]; lblT.font = DefaultFont();
-            lblT.fontSize = 10; lblT.alignment = TextAnchor.MiddleLeft;
-            lblT.color = new Color(0.30f, 0.30f, 0.38f);
+            lblT.fontSize = 13; lblT.alignment = TextAnchor.MiddleLeft;
+            lblT.color = new Color(0.55f, 0.55f, 0.65f);
 
             // Item name
             var name = MakeRect("Name", slot);
@@ -309,7 +309,7 @@ public class GameUI : MonoBehaviour
             _equipSlotName[i].text = "—"; _equipSlotName[i].font = DefaultFont();
             _equipSlotName[i].fontSize = 15; _equipSlotName[i].fontStyle = FontStyle.Bold;
             _equipSlotName[i].alignment = TextAnchor.MiddleLeft;
-            _equipSlotName[i].color = new Color(0.22f, 0.22f, 0.28f);
+            _equipSlotName[i].color = new Color(0.48f, 0.48f, 0.58f);
         }
     }
 
@@ -323,9 +323,9 @@ public class GameUI : MonoBehaviour
             bool  has    = item != null;
             Color accent = EquipSlotColors[i];
             _equipSlotName[i].text  = has ? item.displayName.ToUpper() : "—";
-            _equipSlotName[i].color = has ? accent : new Color(0.22f, 0.22f, 0.28f);
+            _equipSlotName[i].color = has ? accent : new Color(0.48f, 0.48f, 0.58f);
             if (_equipDots[i] != null)
-                _equipDots[i].color = has ? accent : new Color(0.18f, 0.18f, 0.22f);
+                _equipDots[i].color = has ? accent : new Color(0.35f, 0.35f, 0.42f);
             _equipSlotBg[i].color   = has
                 ? new Color(accent.r * 0.12f, accent.g * 0.12f, accent.b * 0.12f, 0.40f)
                 : Color.clear;

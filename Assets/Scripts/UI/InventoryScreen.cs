@@ -442,14 +442,14 @@ public class InventoryScreen : MonoBehaviour
         titleTxt.color = new Color(0.88f, 0.78f, 0.42f); titleTxt.font = DefaultFont();
 
         var hintRT = MakeRect("Hint", _panelRT);
-        CenterAnchor(hintRT, new Vector2(330, 220), new Vector2(130, 30));
+        CenterAnchor(hintRT, new Vector2(300, 220), new Vector2(130, 30));
         var hintTxt = hintRT.gameObject.AddComponent<Text>();
         hintTxt.text = "[TAB] / [ESC]"; hintTxt.alignment = TextAnchor.MiddleRight;
         hintTxt.fontSize = 16; hintTxt.color = new Color(0.35f, 0.35f, 0.42f);
         hintTxt.font = DefaultFont();
 
-        // X close button
-        var xRT  = CenterRect("CloseBtn", _panelRT, new Vector2(406, 218), new Vector2(38, 38));
+        // X close button — far left of title row
+        var xRT  = CenterRect("CloseBtn", _panelRT, new Vector2(-406, 218), new Vector2(38, 38));
         var xImg = xRT.gameObject.AddComponent<Image>();
         xImg.color = new Color(0.16f, 0.06f, 0.06f);
         var xBtn = xRT.gameObject.AddComponent<Button>();
