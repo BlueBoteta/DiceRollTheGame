@@ -1,4 +1,4 @@
-public enum ItemCategory { Resource, Consumable, UtilityTool, Weapon }
+public enum ItemCategory { Resource, Consumable, UtilityTool, Weapon, Armor }
 public enum EquipSlot    { Primary, Secondary, Defense, Utility }
 
 [System.Serializable]
@@ -11,10 +11,11 @@ public class InventoryItem
     public int          quantity;
     public int          maxStack;
     public EquipSlot?   equipSlot;  // null = not equippable from inventory
+    public int          defense;    // flat damage reduction per enemy hit
 
     public InventoryItem(string id, string displayName, ItemCategory category,
                          bool stackable, int quantity, int maxStack,
-                         EquipSlot? equipSlot = null)
+                         EquipSlot? equipSlot = null, int defense = 0)
     {
         this.id          = id;
         this.displayName = displayName;
@@ -23,8 +24,9 @@ public class InventoryItem
         this.quantity    = quantity;
         this.maxStack    = maxStack;
         this.equipSlot   = equipSlot;
+        this.defense     = defense;
     }
 
     public InventoryItem Clone() =>
-        new InventoryItem(id, displayName, category, stackable, quantity, maxStack, equipSlot);
+        new InventoryItem(id, displayName, category, stackable, quantity, maxStack, equipSlot, defense);
 }

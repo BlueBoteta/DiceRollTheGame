@@ -15,6 +15,7 @@ public class GameUI : MonoBehaviour
     // HUD
     Text _hpText;
     Text _ammoText;
+    Text _defText;
 
     // HUD equipment bar
     static readonly string[] EquipLabels = { "PRIMARY", "SECONDARY", "DEFENSE", "UTILITY" };
@@ -73,7 +74,10 @@ public class GameUI : MonoBehaviour
         }
 
         if (PlayerEquipment.Instance != null)
+        {
             PlayerEquipment.Instance.OnChanged += RefreshEquipmentBar;
+            RefreshEquipmentBar();
+        }
 
         if (PlayerToken.Instance != null)
             PlayerToken.Instance.OnLandedOnTile += tile =>
@@ -262,12 +266,21 @@ public class GameUI : MonoBehaviour
 
         // Ammo row
         var ammo = MakeRect("Ammo", panel);
-        Anchor(ammo, new Vector2(0,1), new Vector2(1,1), new Vector2(0,1),
-               new Vector2(pad, -yAmmo), new Vector2(-pad*2, ammoH));
+        Anchor(ammo, new Vector2(0,1), new Vector2(0.55f,1), new Vector2(0,1),
+               new Vector2(pad, -yAmmo), new Vector2(0, ammoH));
         _ammoText = ammo.gameObject.AddComponent<Text>();
         _ammoText.text = "AMMO  0"; _ammoText.font = DefaultFont();
         _ammoText.fontSize = 15; _ammoText.alignment = TextAnchor.MiddleLeft;
         _ammoText.color = new Color(0.88f, 0.72f, 0.28f);
+
+        // DEF display — right side of same row
+        var def = MakeRect("Def", panel);
+        Anchor(def, new Vector2(0.55f,1), new Vector2(1,1), new Vector2(0,1),
+               new Vector2(0, -yAmmo), new Vector2(-pad, ammoH));
+        _defText = def.gameObject.AddComponent<Text>();
+        _defText.text = "DEF  —"; _defText.font = DefaultFont();
+        _defText.fontSize = 15; _defText.alignment = TextAnchor.MiddleRight;
+        _defText.color = new Color(0.40f, 0.72f, 0.88f);
 
         // Separator
         var sep = MakeRect("Sep", panel);
@@ -329,6 +342,15 @@ public class GameUI : MonoBehaviour
             _equipSlotBg[i].color   = has
                 ? new Color(accent.r * 0.12f, accent.g * 0.12f, accent.b * 0.12f, 0.40f)
                 : Color.clear;
+        }
+
+        // Update DEF display
+        if (_defText != null)
+        {
+            var armor = equip.Get(EquipSlot.Defense);
+            _defText.text = armor != null && armor.defense > 0
+                ? "DEF  " + armor.defense
+                : "DEF  —";
         }
     }
 

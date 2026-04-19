@@ -84,6 +84,9 @@ public class SafeHouseScreen : MonoBehaviour
         new Recipe { name="Flashlight Kit",
             ingredients=new Ingredient[]{new Ingredient{id="battery",qty=1},new Ingredient{id="scrap",  qty=4}},
             resultId="flashlight",resultQty=1 },
+        new Recipe { name="Scrap Vest",
+            ingredients=new Ingredient[]{new Ingredient{id="scrap",  qty=5}},
+            resultId="vest",      resultQty=1 },
     };
 
     // ── Content ───────────────────────────────────────────────────────────────
@@ -699,7 +702,7 @@ public class SafeHouseScreen : MonoBehaviour
 
         _craftRows = new CraftRowUI[Recipes.Length];
         for (int i = 0; i < Recipes.Length; i++)
-            _craftRows[i] = BuildCraftListRow(pt, i, Recipes[i], -114f - i * 58f);
+            _craftRows[i] = BuildCraftListRow(pt, i, Recipes[i], -114f - i * 52f);
 
         BuildCraftDetailPane(pt);
         Divider(pt,"CDiv2",true,new Vector2(0,50));

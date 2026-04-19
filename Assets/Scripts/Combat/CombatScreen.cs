@@ -118,8 +118,8 @@ public class CombatScreen : MonoBehaviour
     static readonly string[] KillLines = { "GOES DOWN.", "STAYS DOWN.", "NEUTRALIZED.", "ONE LESS." };
 
     // Loot pools
-    static readonly string[] CombatLootPool = { "ammo","ammo","ammo","scrap","scrap","food","meds","pills","knife" };
-    static readonly string[] BossLootPool   = { "ammo","ammo","scrap","medkit","meds","pills","lockpick","battery","pistol" };
+    static readonly string[] CombatLootPool = { "ammo","ammo","ammo","scrap","scrap","food","meds","pills","knife","vest","helmet" };
+    static readonly string[] BossLootPool   = { "ammo","ammo","scrap","medkit","meds","pills","lockpick","battery","pistol","vest","riot_gear" };
 
     void Awake()
     {
@@ -206,9 +206,15 @@ public class CombatScreen : MonoBehaviour
 
             // ── Enemy attacks ───────────────────────────────────────────────
             AttackMove em = enemyMoves[Random.Range(0, enemyMoves.Length)];
-            int edmg = Random.Range(em.minDmg, em.maxDmg + 1);
+            int rawDmg  = Random.Range(em.minDmg, em.maxDmg + 1);
+            int defense = PlayerEquipment.Instance?.Get(EquipSlot.Defense)?.defense ?? 0;
+            int blocked = Mathf.Min(defense, rawDmg - 1); // always deal at least 1
+            int edmg    = rawDmg - blocked;
             PlayerStats.Instance.TakeDamage(edmg);
-            Log(enemyName + " " + em.log + "  (-" + edmg + " HP).");
+            string dmgLine = blocked > 0
+                ? "  (-" + edmg + " HP, " + blocked + " blocked)."
+                : "  (-" + edmg + " HP).";
+            Log(enemyName + " " + em.log + dmgLine);
             string reaction = PlayerReaction(edmg);
             yield return StartCoroutine(FlashAction(em.flash, em.color));
             yield return StartCoroutine(FlashAction(reaction, ReactionColor(edmg)));

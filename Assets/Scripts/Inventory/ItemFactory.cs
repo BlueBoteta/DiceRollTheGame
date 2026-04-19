@@ -25,6 +25,11 @@ public static class ItemFactory
             "shotgun" => new InventoryItem("shotgun", "Shotgun", ItemCategory.Weapon, false, quantity, 1, EquipSlot.Primary),
             "knife"   => new InventoryItem("knife",   "Knife",   ItemCategory.Weapon, false, quantity, 1, EquipSlot.Secondary),
 
+            // ── Armor — equip into Defense slot, block flat damage ────────────
+            "vest"     => new InventoryItem("vest",     "Tactical Vest",  ItemCategory.Armor, false, quantity, 1, EquipSlot.Defense, defense: 3),
+            "helmet"   => new InventoryItem("helmet",   "Combat Helmet",  ItemCategory.Armor, false, quantity, 1, EquipSlot.Defense, defense: 2),
+            "riot_gear"=> new InventoryItem("riot_gear","Riot Gear",      ItemCategory.Armor, false, quantity, 1, EquipSlot.Defense, defense: 5),
+
             _         => null
         };
     }

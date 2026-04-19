@@ -39,6 +39,7 @@ public class InventoryScreen : MonoBehaviour
     static readonly Color ColConsumable = new Color(0.22f,0.85f, 0.38f);
     static readonly Color ColUtility    = new Color(0.2f, 0.62f, 1f);
     static readonly Color ColWeapon     = new Color(1f,   0.22f, 0.22f);
+    static readonly Color ColArmor      = new Color(0.4f, 0.72f, 0.88f);
     static readonly Color ColEmpty      = new Color(0.10f,0.10f, 0.15f);
 
     void Awake()
@@ -377,6 +378,9 @@ public class InventoryScreen : MonoBehaviour
         "pistol"   => "Cold. Reliable. Doesn't ask questions.\nNeither should you.",
         "shotgun"  => "Loud. Final.\nLeaves nothing behind.",
         "knife"    => "Up close. Personal.\nThe quietest way.",
+        "vest"     => "Kevlar, duct tape, and prayer.\nBlocks 3 damage per hit. Better than nothing.",
+        "helmet"   => "Dented. Someone wore this before you.\nBlocks 2 damage per hit. Don't ask what happened.",
+        "riot_gear"=> "Heavy. Hot. Miserable.\nBlocks 5 damage per hit. Worth every ounce.",
         _          => ""
     };
 
@@ -386,6 +390,7 @@ public class InventoryScreen : MonoBehaviour
         ItemCategory.Consumable  => "CONSUMABLE",
         ItemCategory.UtilityTool => "TOOL",
         ItemCategory.Weapon      => "WEAPON",
+        ItemCategory.Armor       => "ARMOR",
         _                        => ""
     };
 
@@ -395,6 +400,7 @@ public class InventoryScreen : MonoBehaviour
         ItemCategory.Consumable  => ColConsumable,
         ItemCategory.UtilityTool => ColUtility,
         ItemCategory.Weapon      => ColWeapon,
+        ItemCategory.Armor       => ColArmor,
         _                        => Color.white
     };
 

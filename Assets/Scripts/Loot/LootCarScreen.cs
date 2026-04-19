@@ -16,7 +16,7 @@ public class LootCarScreen : MonoBehaviour
 
     static readonly string[] CarLootPool =
     {
-        "ammo","ammo","ammo","scrap","scrap","medkit","food","food","pills","lockpick","pistol","knife"
+        "ammo","ammo","ammo","scrap","scrap","medkit","food","food","pills","lockpick","pistol","knife","vest","helmet"
     };
 
     static readonly string[] Messages =
