@@ -33,6 +33,7 @@ public class GameUI : MonoBehaviour
         new GameObject("Inventory").AddComponent<Inventory>();
         new GameObject("InventoryScreen").AddComponent<InventoryScreen>();
         new GameObject("WinScreen").AddComponent<WinScreen>();
+        new GameObject("SafeHouseScreen").AddComponent<SafeHouseScreen>();
     }
 
     void Start()
@@ -253,18 +254,20 @@ public class GameUI : MonoBehaviour
     {
         string label = type switch
         {
-            TileType.Combat => "COMBAT!",
-            TileType.Loot   => "LOOT!",
-            TileType.Boss   => "BOSS FIGHT!",
-            _               => ""
+            TileType.Combat    => "COMBAT!",
+            TileType.Loot      => "LOOT!",
+            TileType.Boss      => "BOSS FIGHT!",
+            TileType.SafeHouse => "SAFE HOUSE",
+            _                  => ""
         };
 
         Color col = type switch
         {
-            TileType.Combat => new Color(1f, 0.25f, 0.25f),
-            TileType.Loot   => new Color(1f, 0.85f, 0.2f),
-            TileType.Boss   => new Color(0.8f, 0.3f, 1f),
-            _               => Color.clear
+            TileType.Combat    => new Color(1f,  0.25f, 0.25f),
+            TileType.Loot      => new Color(1f,  0.85f, 0.2f),
+            TileType.Boss      => new Color(0.8f,0.3f,  1f),
+            TileType.SafeHouse => new Color(0.9f,0.75f, 0.35f),
+            _                  => Color.clear
         };
 
         if (string.IsNullOrEmpty(label)) yield break;
@@ -369,6 +372,11 @@ public class GameUI : MonoBehaviour
                     yield return StartCoroutine(LootCarScreen.Instance.Open());
                 else if (LootVendingScreen.Instance != null)
                     yield return StartCoroutine(LootVendingScreen.Instance.Open());
+            }
+            else if (landed.tileType == TileType.SafeHouse && SafeHouseScreen.Instance != null)
+            {
+                yield return new WaitForSeconds(0.3f);
+                yield return StartCoroutine(SafeHouseScreen.Instance.Open());
             }
         }
 

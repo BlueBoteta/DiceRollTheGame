@@ -18,8 +18,9 @@ public class BoardGenerator : MonoBehaviour
     public Color lootTileColor    = new Color(0.35f, 0.28f, 0.08f, 1f);
     public Color bossTileColor    = new Color(0.30f, 0.05f, 0.35f, 1f);
     public Color storyTileColor     = new Color(0.10f, 0.25f, 0.35f, 1f);
-    public Color blackjackTileColor = new Color(0.08f, 0.22f, 0.12f, 1f);
-    public Color tileHighlightColor = new Color(1f, 0.85f, 0.2f, 1f);
+    public Color blackjackTileColor  = new Color(0.08f, 0.22f, 0.12f, 1f);
+    public Color safeHouseTileColor  = new Color(0.38f, 0.30f, 0.14f, 1f);
+    public Color tileHighlightColor  = new Color(1f, 0.85f, 0.2f, 1f);
 
     [Header("Tile Distribution")]
     [Range(0, 100)] public int combatChance = 40;
@@ -77,7 +78,9 @@ public class BoardGenerator : MonoBehaviour
     {
         if (index == 0)  return TileType.Normal;
         if (index == 6)  return TileType.Story;
+        if (index == 9)  return TileType.SafeHouse;
         if (index == 11) return TileType.Blackjack;
+        if (index == 24) return TileType.SafeHouse;
 
         int roll = Random.Range(0, 100);
         if (roll < combatChance)              return TileType.Combat;
@@ -125,6 +128,7 @@ public class BoardGenerator : MonoBehaviour
             TileType.Boss   => bossTileColor,
             TileType.Story     => storyTileColor,
             TileType.Blackjack => blackjackTileColor,
+            TileType.SafeHouse => safeHouseTileColor,
             _                  => tileColor,
         };
     }
