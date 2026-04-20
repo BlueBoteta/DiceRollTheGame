@@ -20,6 +20,7 @@ public class BoardGenerator : MonoBehaviour
     public Color storyTileColor     = new Color(0.10f, 0.25f, 0.35f, 1f);
     public Color blackjackTileColor  = new Color(0.08f, 0.22f, 0.12f, 1f);
     public Color safeHouseTileColor  = new Color(0.38f, 0.30f, 0.14f, 1f);
+    public Color scavengeTileColor   = new Color(0.22f, 0.18f, 0.30f, 1f);
     public Color tileHighlightColor  = new Color(1f, 0.85f, 0.2f, 1f);
 
     [Header("Tile Distribution")]
@@ -77,10 +78,13 @@ public class BoardGenerator : MonoBehaviour
     TileType AssignType(int index, int total)
     {
         if (index == 0)  return TileType.Normal;
+        if (index == 5)  return TileType.Scavenge;
         if (index == 9)  return TileType.SafeHouse;
         if (index == 15) return TileType.Story;
         if (index == 18) return TileType.Blackjack;
+        if (index == 22) return TileType.Scavenge;
         if (index == 27) return TileType.SafeHouse;
+        if (index == 32) return TileType.Scavenge;
 
         int roll = Random.Range(0, 100);
         if (roll < combatChance)              return TileType.Combat;
@@ -129,6 +133,7 @@ public class BoardGenerator : MonoBehaviour
             TileType.Story     => storyTileColor,
             TileType.Blackjack => blackjackTileColor,
             TileType.SafeHouse => safeHouseTileColor,
+            TileType.Scavenge  => scavengeTileColor,
             _                  => tileColor,
         };
     }

@@ -55,6 +55,8 @@ public class GameUI : MonoBehaviour
         new GameObject("ReplaceScreen").AddComponent<ReplaceScreen>();
         new GameObject("LootPickupPrompt").AddComponent<LootPickupPrompt>();
         new GameObject("LockpickMinigame").AddComponent<LockpickMinigame>();
+        new GameObject("PinTumblerMinigame").AddComponent<PinTumblerMinigame>();
+        new GameObject("ScavengeScreen").AddComponent<ScavengeScreen>();
     }
 
     void Start()
@@ -98,6 +100,7 @@ public class GameUI : MonoBehaviour
         if (kb.f4Key.wasPressedThisFrame) StartCoroutine(DebugOpen(LootVendingScreen.Instance?.Open()));
         if (kb.f5Key.wasPressedThisFrame) StartCoroutine(DebugOpen(SafeHouseScreen.Instance?.Open()));
         if (kb.f6Key.wasPressedThisFrame) StartCoroutine(DebugOpen(BlackjackScreen.Instance?.Open()));
+        if (kb.f7Key.wasPressedThisFrame) StartCoroutine(DebugOpen(ScavengeScreen.Instance?.Open()));
     }
 
     IEnumerator DebugOpen(IEnumerator screen)
@@ -471,6 +474,7 @@ public class GameUI : MonoBehaviour
             TileType.Loot      => "LOOT!",
             TileType.Boss      => "BOSS FIGHT!",
             TileType.SafeHouse => "SAFE HOUSE",
+            TileType.Scavenge  => "SCAVENGE!",
             _                  => ""
         };
 
@@ -479,7 +483,8 @@ public class GameUI : MonoBehaviour
             TileType.Combat    => new Color(1f,  0.25f, 0.25f),
             TileType.Loot      => new Color(1f,  0.85f, 0.2f),
             TileType.Boss      => new Color(0.8f,0.3f,  1f),
-            TileType.SafeHouse => new Color(0.9f,0.75f, 0.35f),
+            TileType.SafeHouse => new Color(0.9f, 0.75f, 0.35f),
+            TileType.Scavenge  => new Color(0.65f,0.45f, 0.90f),
             _                  => Color.clear
         };
 
@@ -585,6 +590,11 @@ public class GameUI : MonoBehaviour
                     yield return StartCoroutine(LootCarScreen.Instance.Open());
                 else if (LootVendingScreen.Instance != null)
                     yield return StartCoroutine(LootVendingScreen.Instance.Open());
+            }
+            else if (landed.tileType == TileType.Scavenge && ScavengeScreen.Instance != null)
+            {
+                yield return new WaitForSeconds(0.3f);
+                yield return StartCoroutine(ScavengeScreen.Instance.Open());
             }
             else if (landed.tileType == TileType.SafeHouse && SafeHouseScreen.Instance != null)
             {

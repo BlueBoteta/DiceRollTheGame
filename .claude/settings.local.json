@@ -16,7 +16,8 @@
       "Bash(python -c \"from PIL import Image; img = Image.open\\('Assets/Character/mainCharacter.png'\\); print\\(img.size, img.mode\\)\")",
       "Bash(powershell -command 'Add-Type -AssemblyName System.Drawing; $img=[System.Drawing.Image]::FromFile\\(\\(Resolve-Path '\\\\''Assets/Character/mainCharacter.png'\\\\''\\)\\); Write-Output \"$\\($img.Width\\)x$\\($img.Height\\)\"; $img.Dispose\\(\\)')",
       "mcp__UnityMCP__manage_asset",
-      "mcp__UnityMCP__find_gameobjects"
+      "mcp__UnityMCP__find_gameobjects",
+      "Bash(python3 -c ' *)"
     ]
   }
 }
