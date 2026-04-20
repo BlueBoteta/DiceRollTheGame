@@ -181,7 +181,10 @@ public class CombatScreen : MonoBehaviour
                                 : lap >= 3     ? EnemyTier2
                                 :                EnemyTier1;
 
+        bool flashAdvantage = PlayerEquipment.Instance?.Get(EquipSlot.Utility)?.id == "flashlight";
+
         Log(enemyName + " appears.  It wants your blood.");
+        if (flashAdvantage) Log("Flashlight \u2014 you spot it first.");
         yield return new WaitForSeconds(0.7f);
 
         while (_enemyHp > 0 && PlayerStats.Instance != null && PlayerStats.Instance.hp > 0)
@@ -205,6 +208,15 @@ public class CombatScreen : MonoBehaviour
             if (_enemyHp <= 0) break;
 
             // ── Enemy attacks ───────────────────────────────────────────────
+            if (flashAdvantage)
+            {
+                flashAdvantage = false;
+                yield return StartCoroutine(FlashAction("FREE ROUND!", new Color(1f, 0.95f, 0.35f)));
+                Log("It didn't see you coming \u2014 enemy misses.");
+                yield return new WaitForSeconds(0.2f);
+                continue;
+            }
+
             AttackMove em = enemyMoves[Random.Range(0, enemyMoves.Length)];
             int rawDmg  = Random.Range(em.minDmg, em.maxDmg + 1);
             int defense = PlayerEquipment.Instance?.Get(EquipSlot.Defense)?.defense ?? 0;
@@ -226,9 +238,7 @@ public class CombatScreen : MonoBehaviour
         if (_enemyHp <= 0)
         {
             yield return StartCoroutine(FlashAction(KillLines[Random.Range(0, KillLines.Length)], ColGreen));
-            string loot = GiveCombatLoot(isBoss);
-            Log("Dropped: " + loot);
-            _lootFoundText.text = "LOOT:   " + loot;
+            yield return StartCoroutine(GiveCombatLoot(isBoss));
             yield return new WaitForSeconds(0.3f);
             _exitBtn.interactable = true;
         }
@@ -289,23 +299,26 @@ public class CombatScreen : MonoBehaviour
         return new Color(0.9f, 0.05f, 0.05f);
     }
 
-    string GiveCombatLoot(bool isBoss)
+    IEnumerator GiveCombatLoot(bool isBoss)
     {
-        if (Inventory.Instance == null) return "nothing.";
         string[] pool  = isBoss ? BossLootPool : CombatLootPool;
         int      drops = isBoss ? 2 : 1;
         var      parts = new List<string>();
+
         for (int i = 0; i < drops; i++)
         {
-            string id  = pool[Random.Range(0, pool.Length)];
-            int    qty = id == "ammo" ? Random.Range(1, 4) : 1;
-            if (Inventory.Instance.Add(id, qty))
-            {
-                string name = ItemFactory.Create(id)?.displayName ?? id;
-                parts.Add(qty > 1 ? qty + "x " + name : name);
-            }
+            string id   = pool[Random.Range(0, pool.Length)];
+            int    qty  = id == "ammo" ? Random.Range(1, 4) : 1;
+            string name = ItemFactory.Create(id)?.displayName ?? id;
+            parts.Add(qty > 1 ? qty + "x " + name : name);
+
+            if (LootPickupPrompt.Instance != null)
+                yield return StartCoroutine(LootPickupPrompt.Instance.Show(id, qty));
         }
-        return parts.Count > 0 ? string.Join(", ", parts) : "nothing.  Inventory full.";
+
+        string lootStr = string.Join(", ", parts);
+        Log("Dropped: " + lootStr);
+        _lootFoundText.text = "LOOT:   " + lootStr;
     }
 
     // ── Animations ───────────────────────────────────────────────────────────

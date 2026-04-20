@@ -21,11 +21,13 @@ public class Inventory : MonoBehaviour
 
     void SeedStartingItems()
     {
-        Add("ammo",    10);
-        Add("scrap",   1);
-        Add("meds",    1);
-        Add("battery", 1);
-        Add("knife",   1);
+        Add("ammo",       10);
+        Add("scrap",       1);
+        Add("meds",        1);
+        Add("battery",     1);
+        Add("knife",       1);
+        Add("flashlight",  1);
+        Add("lockpick",    1);
     }
 
     // ── Queries ───────────────────────────────────────────────────────────────

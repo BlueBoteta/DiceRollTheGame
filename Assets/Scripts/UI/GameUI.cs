@@ -28,6 +28,7 @@ public class GameUI : MonoBehaviour
     Image[]       _equipSlotBg   = new Image[4];
     Text[]        _equipSlotName = new Text[4];
     Image[]       _equipDots     = new Image[4];
+    Button[]      _equipSlotBtns = new Button[4];
     RectTransform _hpBarFill;
     Image         _hpBarFillImg;
     Coroutine     _hpAnimCo;
@@ -51,6 +52,8 @@ public class GameUI : MonoBehaviour
         new GameObject("InventoryScreen").AddComponent<InventoryScreen>();
         new GameObject("WinScreen").AddComponent<WinScreen>();
         new GameObject("SafeHouseScreen").AddComponent<SafeHouseScreen>();
+        new GameObject("ReplaceScreen").AddComponent<ReplaceScreen>();
+        new GameObject("LootPickupPrompt").AddComponent<LootPickupPrompt>();
     }
 
     void Start()
@@ -298,6 +301,12 @@ public class GameUI : MonoBehaviour
             Anchor(slot, new Vector2(0,1), new Vector2(1,1), new Vector2(0,1),
                    new Vector2(0,-y), new Vector2(0, slotH));
 
+            int capturedI = i;
+            _equipSlotBtns[i] = slot.gameObject.AddComponent<Button>();
+            _equipSlotBtns[i].targetGraphic = _equipSlotBg[i];
+            _equipSlotBtns[i].transition    = Selectable.Transition.None;
+            _equipSlotBtns[i].onClick.AddListener(() => StartCoroutine(TryUnequip(capturedI)));
+
             // Colored indicator dot
             var dot = MakeRect("Dot", slot);
             Anchor(dot, new Vector2(0,0.5f), new Vector2(0,0.5f), new Vector2(0.5f,0.5f),
@@ -352,6 +361,22 @@ public class GameUI : MonoBehaviour
                 ? "DEF  " + armor.defense
                 : "DEF  —";
         }
+    }
+
+    IEnumerator TryUnequip(int slotIdx)
+    {
+        var equip = PlayerEquipment.Instance;
+        if (equip == null) yield break;
+        var item = equip.Get((EquipSlot)slotIdx);
+        if (item == null) yield break;
+
+        string id  = item.id;
+        int    qty = item.quantity;
+        equip.Unequip((EquipSlot)slotIdx);
+
+        bool added = Inventory.Instance != null && Inventory.Instance.Add(id, qty);
+        if (!added && ReplaceScreen.Instance != null)
+            yield return StartCoroutine(ReplaceScreen.Instance.Prompt(id, qty));
     }
 
     void BuildNotification(Transform canvas)

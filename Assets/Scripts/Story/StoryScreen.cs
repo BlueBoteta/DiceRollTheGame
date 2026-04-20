@@ -14,6 +14,8 @@ public class StoryScreen : MonoBehaviour
     Button     _continueBtn;
     bool       _done;
 
+    static readonly string[] FlashlightBonusPool = { "ammo","ammo","meds","food","pills","battery" };
+
     static readonly string[] Stories =
     {
         "Day 14.\n\nThey came at night. We thought the walls would hold.\n\nThey didn't.\n\nIf you find this, the police station on 5th has supplies in the basement. Stay low. Stay quiet.\n\n— M",
@@ -63,6 +65,26 @@ public class StoryScreen : MonoBehaviour
         {
             _messageText.text += c;
             yield return new WaitForSeconds(c == '\n' ? 0.12f : 0.032f);
+        }
+
+        // Flashlight bonus — sweep the room for hidden items
+        var flashlight = PlayerEquipment.Instance?.Get(EquipSlot.Utility);
+        if (flashlight?.id == "flashlight")
+        {
+            string bonusId  = FlashlightBonusPool[Random.Range(0, FlashlightBonusPool.Length)];
+            int    bonusQty = bonusId == "ammo" ? Random.Range(2, 5) : 1;
+
+            string bonusLine = "\n\n[Flashlight] Your beam sweeps the room.\nSomething catches the light in the corner.";
+            foreach (char c in bonusLine)
+            {
+                _messageText.text += c;
+                yield return new WaitForSeconds(c == '\n' ? 0.10f : 0.030f);
+            }
+
+            yield return new WaitForSeconds(0.4f);
+
+            if (LootPickupPrompt.Instance != null)
+                yield return StartCoroutine(LootPickupPrompt.Instance.Show(bonusId, bonusQty));
         }
 
         _continueBtn.gameObject.SetActive(true);

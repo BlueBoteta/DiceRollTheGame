@@ -14,6 +14,19 @@ public class LootCarScreen : MonoBehaviour
     Button        _continueBtn;
     bool          _done;
 
+    // Locked trunk state
+    GameObject _lockedPanel;
+    Text       _lockStatusText;
+    Button     _useLockpickBtn;
+    bool       _premiumLoot;
+    bool       _forcedOpen;
+    int        _lockChoice;   // -1=waiting, 0=lockpick, 1=force, 2=leave
+
+    static readonly string[] PremiumLootPool =
+    {
+        "medkit","medkit","pistol","shotgun","vest","riot_gear","ammo","ammo","battery","lockpick"
+    };
+
     static readonly string[] CarLootPool =
     {
         "ammo","ammo","ammo","scrap","scrap","medkit","food","food","pills","lockpick","pistol","knife","vest","helmet"
@@ -36,19 +49,60 @@ public class LootCarScreen : MonoBehaviour
 
     public IEnumerator Open()
     {
-        _done = false;
+        _done        = false;
+        _premiumLoot = false;
+        _forcedOpen  = false;
+        _lockChoice  = -1;
+
         _trunkLid.localEulerAngles = Vector3.zero;
         _lootItemGO.SetActive(false);
         _lootItemGO.GetComponent<RectTransform>().localScale = Vector3.one;
         _messageText.text = "";
-        _openBtn.gameObject.SetActive(true);
-        _openBtn.interactable = true;
         _continueBtn.gameObject.SetActive(false);
+        _lockedPanel.SetActive(false);
         _canvas.gameObject.SetActive(true);
 
-        while (!_done)
-            yield return null;
+        bool isLocked = Random.value < 0.28f;
+        if (isLocked)
+        {
+            _openBtn.gameObject.SetActive(false);
+            bool hasLockpick = Inventory.Instance?.Has("lockpick") ?? false;
+            _lockStatusText.text = hasLockpick
+                ? "The trunk is padlocked.\nYou have a lockpick."
+                : "The trunk is padlocked.\nNo lockpick.";
+            _useLockpickBtn.gameObject.SetActive(hasLockpick);
+            _lockedPanel.SetActive(true);
 
+            _lockChoice = -1;
+            while (_lockChoice == -1) yield return null;
+
+            _lockedPanel.SetActive(false);
+
+            if (_lockChoice == 2) // LEAVE IT
+            {
+                _canvas.gameObject.SetActive(false);
+                yield break;
+            }
+            if (_lockChoice == 0) // USE LOCKPICK
+            {
+                Inventory.Instance?.Remove("lockpick", 1);
+                _premiumLoot = true;
+            }
+            else // FORCE IT
+            {
+                _forcedOpen = true;
+            }
+
+            // Auto-open the trunk (no OPEN button needed)
+            StartCoroutine(OpenSequence());
+        }
+        else
+        {
+            _openBtn.gameObject.SetActive(true);
+            _openBtn.interactable = true;
+        }
+
+        while (!_done) yield return null;
         _canvas.gameObject.SetActive(false);
     }
 
@@ -78,22 +132,34 @@ public class LootCarScreen : MonoBehaviour
         yield return new WaitForSeconds(0.2f);
         _openBtn.gameObject.SetActive(false);
 
-        // Pick and give loot
-        string lootId = CarLootPool[Random.Range(0, CarLootPool.Length)];
-        int qty = lootId == "ammo" ? Random.Range(2, 5) : 1;
-        bool added = Inventory.Instance != null && Inventory.Instance.Add(lootId, qty);
-        string itemName = ItemFactory.Create(lootId)?.displayName ?? lootId;
-        string itemLine = added
-            ? (qty > 1 ? $"\n\n+ {qty}x {itemName} added to inventory."
-                       : $"\n\n+ {itemName} added to inventory.")
-            : "\n\nInventory full. You leave it behind.";
+        // Forced open: 40% chance the trunk is empty/ruined
+        if (_forcedOpen && Random.value < 0.40f)
+        {
+            string emptyMsg = "Busted lock, busted luck.\n\nYou ripped the latch clean off.\nNothing worth taking inside.";
+            foreach (char c in emptyMsg)
+            {
+                _messageText.text += c;
+                yield return new WaitForSeconds(c == '\n' ? 0.09f : 0.028f);
+            }
+            _continueBtn.gameObject.SetActive(true);
+            yield break;
+        }
 
-        string msg = Messages[Random.Range(0, Messages.Length)] + itemLine;
+        // Pick loot from the appropriate pool
+        string[] pool  = _premiumLoot ? PremiumLootPool : CarLootPool;
+        string lootId  = pool[Random.Range(0, pool.Length)];
+        int    qty     = lootId == "ammo" ? (_premiumLoot ? Random.Range(5, 9) : Random.Range(2, 5)) : 1;
+
+        string msg = Messages[Random.Range(0, Messages.Length)];
         foreach (char c in msg)
         {
             _messageText.text += c;
             yield return new WaitForSeconds(c == '\n' ? 0.09f : 0.028f);
         }
+
+        yield return new WaitForSeconds(0.3f);
+        if (LootPickupPrompt.Instance != null)
+            yield return StartCoroutine(LootPickupPrompt.Instance.Show(lootId, qty));
 
         _continueBtn.gameObject.SetActive(true);
     }
@@ -156,6 +222,54 @@ public class LootCarScreen : MonoBehaviour
         _openBtn.onClick.AddListener(OnOpenClicked);
         Txt(Ctr("Lbl", openRT, Vector2.zero, openRT.sizeDelta),
             "OPEN", 22, FontStyle.Bold, Color.white, TextAnchor.MiddleCenter);
+
+        // Locked panel — shown instead of OPEN button when trunk is padlocked
+        var lpGO = new GameObject("LockedPanel");
+        lpGO.transform.SetParent(panel, false);
+        _lockedPanel = lpGO;
+        var lpRT = lpGO.AddComponent<RectTransform>();
+        lpRT.anchorMin = lpRT.anchorMax = lpRT.pivot = new Vector2(0.5f, 0.5f);
+        lpRT.anchoredPosition = new Vector2(265f, 68f);
+        lpRT.sizeDelta = new Vector2(180f, 120f);
+
+        var lstRT = Ctr("LockStatus", lpGO.transform, new Vector2(0f, 40f), new Vector2(172f, 42f));
+        _lockStatusText = lstRT.gameObject.AddComponent<Text>();
+        _lockStatusText.font = DefaultFont(); _lockStatusText.fontSize = 13;
+        _lockStatusText.color = new Color(0.85f, 0.65f, 0.25f);
+        _lockStatusText.alignment = TextAnchor.MiddleCenter;
+        _lockStatusText.horizontalOverflow = HorizontalWrapMode.Wrap;
+
+        var ulRT = Ctr("UseLockpickBtn", lpGO.transform, new Vector2(-44f, -2f), new Vector2(82f, 34f));
+        ulRT.gameObject.AddComponent<Image>().color = new Color(0.18f, 0.36f, 0.18f);
+        _useLockpickBtn = ulRT.gameObject.AddComponent<Button>();
+        var ulc = _useLockpickBtn.colors;
+        ulc.highlightedColor = new Color(0.26f, 0.52f, 0.26f);
+        _useLockpickBtn.colors = ulc;
+        _useLockpickBtn.onClick.AddListener(() => _lockChoice = 0);
+        Txt(Ctr("Lbl", ulRT, Vector2.zero, ulRT.sizeDelta),
+            "LOCKPICK", 12, FontStyle.Bold, Color.white, TextAnchor.MiddleCenter);
+
+        var frRT = Ctr("ForceBtn", lpGO.transform, new Vector2(46f, -2f), new Vector2(82f, 34f));
+        frRT.gameObject.AddComponent<Image>().color = new Color(0.36f, 0.16f, 0.08f);
+        var forceBtn = frRT.gameObject.AddComponent<Button>();
+        var frc = forceBtn.colors;
+        frc.highlightedColor = new Color(0.52f, 0.24f, 0.12f);
+        forceBtn.colors = frc;
+        forceBtn.onClick.AddListener(() => _lockChoice = 1);
+        Txt(Ctr("Lbl", frRT, Vector2.zero, frRT.sizeDelta),
+            "FORCE IT", 12, FontStyle.Bold, Color.white, TextAnchor.MiddleCenter);
+
+        var lvRT = Ctr("LeaveLockedBtn", lpGO.transform, new Vector2(0f, -46f), new Vector2(114f, 30f));
+        lvRT.gameObject.AddComponent<Image>().color = new Color(0.18f, 0.18f, 0.22f);
+        var leaveBtn = lvRT.gameObject.AddComponent<Button>();
+        var lvc = leaveBtn.colors;
+        lvc.highlightedColor = new Color(0.26f, 0.26f, 0.32f);
+        leaveBtn.colors = lvc;
+        leaveBtn.onClick.AddListener(() => _lockChoice = 2);
+        Txt(Ctr("Lbl", lvRT, Vector2.zero, lvRT.sizeDelta),
+            "LEAVE IT", 11, FontStyle.Bold, new Color(0.58f, 0.58f, 0.60f), TextAnchor.MiddleCenter);
+
+        lpGO.SetActive(false);
 
         // Message area
         var msgBg = Ctr("MsgBg", panel, new Vector2(0, -158), new Vector2(860, 155));

@@ -119,21 +119,19 @@ public class LootVendingScreen : MonoBehaviour
         yield return new WaitForSeconds(0.3f);
 
         // Pick and give loot
-        string lootId = VendingLootPool[Random.Range(0, VendingLootPool.Length)];
-        int qty = lootId == "ammo" ? Random.Range(1, 4) : 1;
-        bool added = Inventory.Instance != null && Inventory.Instance.Add(lootId, qty);
-        string itemName = ItemFactory.Create(lootId)?.displayName ?? lootId;
-        string itemLine = added
-            ? (qty > 1 ? $"\n\n+ {qty}x {itemName} added to inventory."
-                       : $"\n\n+ {itemName} added to inventory.")
-            : "\n\nInventory full. You leave it behind.";
+        string lootId   = VendingLootPool[Random.Range(0, VendingLootPool.Length)];
+        int    qty      = lootId == "ammo" ? Random.Range(1, 4) : 1;
 
-        string msg = Messages[Random.Range(0, Messages.Length)] + itemLine;
+        string msg = Messages[Random.Range(0, Messages.Length)];
         foreach (char c in msg)
         {
             _messageText.text += c;
             yield return new WaitForSeconds(c == '\n' ? 0.09f : 0.028f);
         }
+
+        yield return new WaitForSeconds(0.3f);
+        if (LootPickupPrompt.Instance != null)
+            yield return StartCoroutine(LootPickupPrompt.Instance.Show(lootId, qty));
 
         _continueBtn.gameObject.SetActive(true);
     }
