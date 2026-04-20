@@ -87,6 +87,22 @@ public class GameUI : MonoBehaviour
                 GameManager.Instance?.HandleTileLanding(tile);
     }
 
+    void Update()
+    {
+        if (UnityEngine.InputSystem.Keyboard.current.f2Key.wasPressedThisFrame && !_rolling)
+            StartCoroutine(DebugOpenStory());
+    }
+
+    IEnumerator DebugOpenStory()
+    {
+        _rolling = true;
+        _rollButton.interactable = false;
+        if (StoryScreen.Instance != null)
+            yield return StartCoroutine(StoryScreen.Instance.Open());
+        _rollButton.interactable = true;
+        _rolling = false;
+    }
+
     void OnDestroy()
     {
         if (GameManager.Instance != null)
