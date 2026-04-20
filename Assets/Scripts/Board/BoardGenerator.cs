@@ -77,10 +77,10 @@ public class BoardGenerator : MonoBehaviour
     TileType AssignType(int index, int total)
     {
         if (index == 0)  return TileType.Normal;
-        if (index == 6)  return TileType.Story;
         if (index == 9)  return TileType.SafeHouse;
-        if (index == 11) return TileType.Blackjack;
-        if (index == 24) return TileType.SafeHouse;
+        if (index == 15) return TileType.Story;
+        if (index == 18) return TileType.Blackjack;
+        if (index == 27) return TileType.SafeHouse;
 
         int roll = Random.Range(0, 100);
         if (roll < combatChance)              return TileType.Combat;

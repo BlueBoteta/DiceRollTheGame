@@ -54,6 +54,7 @@ public class GameUI : MonoBehaviour
         new GameObject("SafeHouseScreen").AddComponent<SafeHouseScreen>();
         new GameObject("ReplaceScreen").AddComponent<ReplaceScreen>();
         new GameObject("LootPickupPrompt").AddComponent<LootPickupPrompt>();
+        new GameObject("LockpickMinigame").AddComponent<LockpickMinigame>();
     }
 
     void Start()
@@ -89,16 +90,22 @@ public class GameUI : MonoBehaviour
 
     void Update()
     {
-        if (UnityEngine.InputSystem.Keyboard.current.f2Key.wasPressedThisFrame && !_rolling)
-            StartCoroutine(DebugOpenStory());
+        var kb = UnityEngine.InputSystem.Keyboard.current;
+        if (_rolling) return;
+        if (kb.f1Key.wasPressedThisFrame) StartCoroutine(DebugOpen(CombatScreen.Instance?.Open()));
+        if (kb.f2Key.wasPressedThisFrame) StartCoroutine(DebugOpen(StoryScreen.Instance?.Open()));
+        if (kb.f3Key.wasPressedThisFrame) StartCoroutine(DebugOpen(LootCarScreen.Instance?.Open()));
+        if (kb.f4Key.wasPressedThisFrame) StartCoroutine(DebugOpen(LootVendingScreen.Instance?.Open()));
+        if (kb.f5Key.wasPressedThisFrame) StartCoroutine(DebugOpen(SafeHouseScreen.Instance?.Open()));
+        if (kb.f6Key.wasPressedThisFrame) StartCoroutine(DebugOpen(BlackjackScreen.Instance?.Open()));
     }
 
-    IEnumerator DebugOpenStory()
+    IEnumerator DebugOpen(IEnumerator screen)
     {
+        if (screen == null) yield break;
         _rolling = true;
         _rollButton.interactable = false;
-        if (StoryScreen.Instance != null)
-            yield return StartCoroutine(StoryScreen.Instance.Open());
+        yield return StartCoroutine(screen);
         _rollButton.interactable = true;
         _rolling = false;
     }

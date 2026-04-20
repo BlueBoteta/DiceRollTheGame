@@ -86,7 +86,12 @@ public class LootCarScreen : MonoBehaviour
             if (_lockChoice == 0) // USE LOCKPICK
             {
                 Inventory.Instance?.Remove("lockpick", 1);
-                _premiumLoot = true;
+                if (LockpickMinigame.Instance != null)
+                {
+                    yield return StartCoroutine(LockpickMinigame.Instance.Play());
+                    _premiumLoot = LockpickMinigame.Instance.Result;
+                }
+                else _premiumLoot = true;
             }
             else // FORCE IT
             {
