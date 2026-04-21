@@ -564,6 +564,8 @@ MonoBehaviour:
   bossTileColor: {r: 0.3, g: 0.05, b: 0.35, a: 1}
   storyTileColor: {r: 0.1, g: 0.25, b: 0.35, a: 1}
   blackjackTileColor: {r: 0.08, g: 0.22, b: 0.12, a: 1}
+  safeHouseTileColor: {r: 0.38, g: 0.3, b: 0.14, a: 1}
+  scavengeTileColor: {r: 0.22, g: 0.18, b: 0.3, a: 1}
   tileHighlightColor: {r: 0.19999999, g: 1, b: 0.91987956, a: 0.41960785}
   combatChance: 40
   lootChance: 30

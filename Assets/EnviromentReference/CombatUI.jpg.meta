@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 32d84778b7a1bc34aa59e2f98801b97e
+guid: b882bba15fadcee42aadfb33b206ba1a
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 1719429188698244204
-    second: final idea_0
+      213: 7496093867351919135
+    second: CombatUI_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: final idea_0
+      name: CombatUI_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 1365
-        height: 768
+        width: 1200
+        height: 672
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c640cc8bcb3acd710800000000000000
-      internalID: 1719429188698244204
+      spriteID: f1ace7608a9770860800000000000000
+      internalID: 7496093867351919135
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      final idea_0: 1719429188698244204
+      CombatUI_0: 7496093867351919135
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
