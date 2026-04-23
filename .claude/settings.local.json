@@ -17,7 +17,9 @@
       "Bash(powershell -command 'Add-Type -AssemblyName System.Drawing; $img=[System.Drawing.Image]::FromFile\\(\\(Resolve-Path '\\\\''Assets/Character/mainCharacter.png'\\\\''\\)\\); Write-Output \"$\\($img.Width\\)x$\\($img.Height\\)\"; $img.Dispose\\(\\)')",
       "mcp__UnityMCP__manage_asset",
       "mcp__UnityMCP__find_gameobjects",
-      "Bash(python3 -c ' *)"
+      "Bash(python3 -c ' *)",
+      "Bash(mkdir -p \"D:/github clones/DiceRollTheGame/Assets/Resources/Combat\")",
+      "Bash(cp \"D:/github clones/DiceRollTheGame/Assets/Combat/CombatBackground/CombatBackGround1.png\" \"D:/github clones/DiceRollTheGame/Assets/Resources/Combat/CombatBackGround1.png\")"
     ]
   }
 }
