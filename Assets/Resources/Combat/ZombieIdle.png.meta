@@ -1,0 +1,1859 @@
+fileFormatVersion: 2
+guid: ea54ea42e61f1b740bdd86bdc7639c8d
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 1307261339070176888
+    second: ZombieIdle_0
+  - first:
+      213: 6861165980009449592
+    second: ZombieIdle_1
+  - first:
+      213: 5753996667126049884
+    second: ZombieIdle_2
+  - first:
+      213: 4479259917525997916
+    second: ZombieIdle_3
+  - first:
+      213: 4791347545440075853
+    second: ZombieIdle_4
+  - first:
+      213: 836320356344149201
+    second: ZombieIdle_5
+  - first:
+      213: -4415262307601637622
+    second: ZombieIdle_6
+  - first:
+      213: -709018972853211622
+    second: ZombieIdle_7
+  - first:
+      213: -8265785211211667170
+    second: ZombieIdle_8
+  - first:
+      213: 3544874867746675615
+    second: ZombieIdle_9
+  - first:
+      213: -4494689318202469545
+    second: ZombieIdle_10
+  - first:
+      213: -6725787519626402219
+    second: ZombieIdle_11
+  - first:
+      213: 1185545965976978201
+    second: ZombieIdle_12
+  - first:
+      213: 7975015833439653036
+    second: ZombieIdle_13
+  - first:
+      213: -3463325680782155235
+    second: ZombieIdle_14
+  - first:
+      213: -371363313960552637
+    second: ZombieIdle_15
+  - first:
+      213: 8904638510699233797
+    second: ZombieIdle_16
+  - first:
+      213: 1739704838144454057
+    second: ZombieIdle_17
+  - first:
+      213: -4640157328343726699
+    second: ZombieIdle_18
+  - first:
+      213: 7189224888314379303
+    second: ZombieIdle_19
+  - first:
+      213: -8344400531296482952
+    second: ZombieIdle_20
+  - first:
+      213: -888640584185894439
+    second: ZombieIdle_21
+  - first:
+      213: 6643889763072611661
+    second: ZombieIdle_22
+  - first:
+      213: -918100275856125409
+    second: ZombieIdle_23
+  - first:
+      213: 2967720509230576405
+    second: ZombieIdle_24
+  - first:
+      213: -3212850301873045832
+    second: ZombieIdle_25
+  - first:
+      213: -49766222231342114
+    second: ZombieIdle_26
+  - first:
+      213: 7635429337722142858
+    second: ZombieIdle_27
+  - first:
+      213: -4477280247848051627
+    second: ZombieIdle_28
+  - first:
+      213: -6720612182589833133
+    second: ZombieIdle_29
+  - first:
+      213: 6907424114669852037
+    second: ZombieIdle_30
+  - first:
+      213: -2106764747589806969
+    second: ZombieIdle_31
+  - first:
+      213: -6955741849941791141
+    second: ZombieIdle_32
+  - first:
+      213: 4037055577317957826
+    second: ZombieIdle_33
+  - first:
+      213: -9065483131428435429
+    second: ZombieIdle_34
+  - first:
+      213: -6213074829812825538
+    second: ZombieIdle_35
+  - first:
+      213: -17784269153097999
+    second: ZombieIdle_36
+  - first:
+      213: -6518516152841451408
+    second: ZombieIdle_37
+  - first:
+      213: 4789786552027151969
+    second: ZombieIdle_38
+  - first:
+      213: 4800599714784587909
+    second: ZombieIdle_39
+  - first:
+      213: -8670708106687020514
+    second: ZombieIdle_40
+  - first:
+      213: 1591382369561289565
+    second: ZombieIdle_41
+  - first:
+      213: -7429681348248148777
+    second: ZombieIdle_42
+  - first:
+      213: 653790474158108798
+    second: ZombieIdle_43
+  - first:
+      213: -4080053939397316013
+    second: ZombieIdle_44
+  - first:
+      213: 3818306049683457000
+    second: ZombieIdle_45
+  - first:
+      213: -3955308635669405177
+    second: ZombieIdle_46
+  - first:
+      213: 6228065349447663760
+    second: ZombieIdle_47
+  - first:
+      213: 9143405892205530395
+    second: ZombieIdle_48
+  - first:
+      213: 1156322215989990809
+    second: ZombieIdle_49
+  - first:
+      213: -5140654746395930152
+    second: ZombieIdle_50
+  - first:
+      213: -2938281818073689260
+    second: ZombieIdle_51
+  - first:
+      213: -4962877789891179714
+    second: ZombieIdle_52
+  - first:
+      213: -1900640049872958130
+    second: ZombieIdle_53
+  - first:
+      213: -3431076043126785697
+    second: ZombieIdle_54
+  - first:
+      213: -9033846289971559492
+    second: ZombieIdle_55
+  - first:
+      213: 2015311967723192541
+    second: ZombieIdle_56
+  - first:
+      213: -5058163736614476947
+    second: ZombieIdle_57
+  - first:
+      213: -6031982483090430221
+    second: ZombieIdle_58
+  - first:
+      213: -8111833715790706556
+    second: ZombieIdle_59
+  - first:
+      213: -8965143013048909535
+    second: ZombieIdle_60
+  - first:
+      213: -3273949676222795341
+    second: ZombieIdle_61
+  - first:
+      213: -8028223915602758746
+    second: ZombieIdle_62
+  - first:
+      213: 2408589066208794338
+    second: ZombieIdle_63
+  - first:
+      213: 45710455914694672
+    second: ZombieIdle_64
+  - first:
+      213: -4327024746497888893
+    second: ZombieIdle_65
+  - first:
+      213: 3476373903920454824
+    second: ZombieIdle_66
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: ZombieIdle_0
+      rect:
+        serializedVersion: 2
+        x: 152
+        y: 4515
+        width: 335
+        height: 572
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 87e11eff243542210800000000000000
+      internalID: 1307261339070176888
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_1
+      rect:
+        serializedVersion: 2
+        x: 792
+        y: 4515
+        width: 335
+        height: 572
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 87845775b12c73f50800000000000000
+      internalID: 6861165980009449592
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_2
+      rect:
+        serializedVersion: 2
+        x: 1451
+        y: 4514
+        width: 325
+        height: 576
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c5c64d69b7d4adf40800000000000000
+      internalID: 5753996667126049884
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_3
+      rect:
+        serializedVersion: 2
+        x: 2091
+        y: 4514
+        width: 325
+        height: 576
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c5958c0b927892e30800000000000000
+      internalID: 4479259917525997916
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_4
+      rect:
+        serializedVersion: 2
+        x: 2740
+        y: 4515
+        width: 331
+        height: 572
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d404569f4394e7240800000000000000
+      internalID: 4791347545440075853
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_5
+      rect:
+        serializedVersion: 2
+        x: 3380
+        y: 4515
+        width: 331
+        height: 572
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1d4325edee43b9b00800000000000000
+      internalID: 836320356344149201
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_6
+      rect:
+        serializedVersion: 2
+        x: 4022
+        y: 4515
+        width: 339
+        height: 579
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a0f9b350356d9b2c0800000000000000
+      internalID: -4415262307601637622
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_7
+      rect:
+        serializedVersion: 2
+        x: 4662
+        y: 4515
+        width: 339
+        height: 579
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a1e6210300f0926f0800000000000000
+      internalID: -709018972853211622
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_8
+      rect:
+        serializedVersion: 2
+        x: 5304
+        y: 4515
+        width: 339
+        height: 585
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e192d08f4280a4d80800000000000000
+      internalID: -8265785211211667170
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_9
+      rect:
+        serializedVersion: 2
+        x: 184
+        y: 3875
+        width: 339
+        height: 585
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f9b104129ece13130800000000000000
+      internalID: 3544874867746675615
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_10
+      rect:
+        serializedVersion: 2
+        x: 825
+        y: 3875
+        width: 340
+        height: 588
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7539cc401e7af91c0800000000000000
+      internalID: -4494689318202469545
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_11
+      rect:
+        serializedVersion: 2
+        x: 1465
+        y: 3875
+        width: 340
+        height: 588
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 556a9e9b2e339a2a0800000000000000
+      internalID: -6725787519626402219
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_12
+      rect:
+        serializedVersion: 2
+        x: 2106
+        y: 3875
+        width: 340
+        height: 590
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 91384f656c7e37010800000000000000
+      internalID: 1185545965976978201
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_13
+      rect:
+        serializedVersion: 2
+        x: 2746
+        y: 3875
+        width: 340
+        height: 590
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cac4946a5a2fcae60800000000000000
+      internalID: 7975015833439653036
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_14
+      rect:
+        serializedVersion: 2
+        x: 3387
+        y: 3875
+        width: 341
+        height: 593
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d12ed7f84abcfefc0800000000000000
+      internalID: -3463325680782155235
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_15
+      rect:
+        serializedVersion: 2
+        x: 4028
+        y: 3875
+        width: 341
+        height: 594
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 347f4c49807a8daf0800000000000000
+      internalID: -371363313960552637
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_16
+      rect:
+        serializedVersion: 2
+        x: 4668
+        y: 3875
+        width: 341
+        height: 594
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 502cd73fb81a39b70800000000000000
+      internalID: 8904638510699233797
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_17
+      rect:
+        serializedVersion: 2
+        x: 5308
+        y: 3875
+        width: 341
+        height: 595
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9ade0ab355ca42810800000000000000
+      internalID: 1739704838144454057
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_18
+      rect:
+        serializedVersion: 2
+        x: 188
+        y: 3235
+        width: 341
+        height: 595
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 59585269e79da9fb0800000000000000
+      internalID: -4640157328343726699
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_19
+      rect:
+        serializedVersion: 2
+        x: 829
+        y: 3235
+        width: 339
+        height: 595
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 72c306e12f145c360800000000000000
+      internalID: 7189224888314379303
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_20
+      rect:
+        serializedVersion: 2
+        x: 1469
+        y: 3235
+        width: 339
+        height: 595
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8790e746debb23c80800000000000000
+      internalID: -8344400531296482952
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_21
+      rect:
+        serializedVersion: 2
+        x: 2102
+        y: 3235
+        width: 339
+        height: 594
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9d9aa9ec81aeaa3f0800000000000000
+      internalID: -888640584185894439
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_22
+      rect:
+        serializedVersion: 2
+        x: 2742
+        y: 3235
+        width: 339
+        height: 594
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d451cc6e986d33c50800000000000000
+      internalID: 6643889763072611661
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_23
+      rect:
+        serializedVersion: 2
+        x: 3364
+        y: 3235
+        width: 311
+        height: 588
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f125865d9a04243f0800000000000000
+      internalID: -918100275856125409
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_24
+      rect:
+        serializedVersion: 2
+        x: 4004
+        y: 3235
+        width: 311
+        height: 588
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 513745954167f2920800000000000000
+      internalID: 2967720509230576405
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_25
+      rect:
+        serializedVersion: 2
+        x: 4497
+        y: 3235
+        width: 425
+        height: 543
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8beb9504ca9a963d0800000000000000
+      internalID: -3212850301873045832
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_26
+      rect:
+        serializedVersion: 2
+        x: 5137
+        y: 3235
+        width: 425
+        height: 543
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ed3761272e13f4ff0800000000000000
+      internalID: -49766222231342114
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_27
+      rect:
+        serializedVersion: 2
+        x: 14
+        y: 2595
+        width: 427
+        height: 544
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a804686478e76f960800000000000000
+      internalID: 7635429337722142858
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_28
+      rect:
+        serializedVersion: 2
+        x: 654
+        y: 2595
+        width: 427
+        height: 544
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 55cd42316518dd1c0800000000000000
+      internalID: -4477280247848051627
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_29
+      rect:
+        serializedVersion: 2
+        x: 1294
+        y: 2595
+        width: 427
+        height: 544
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3500297c3d69bb2a0800000000000000
+      internalID: -6720612182589833133
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_30
+      rect:
+        serializedVersion: 2
+        x: 1934
+        y: 2595
+        width: 427
+        height: 544
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5851ddb92a91cdf50800000000000000
+      internalID: 6907424114669852037
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_31
+      rect:
+        serializedVersion: 2
+        x: 2574
+        y: 2595
+        width: 427
+        height: 544
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 784189acf9443c2e0800000000000000
+      internalID: -2106764747589806969
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_32
+      rect:
+        serializedVersion: 2
+        x: 3212
+        y: 2595
+        width: 429
+        height: 539
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b5ea6ecf3ad387f90800000000000000
+      internalID: -6955741849941791141
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_33
+      rect:
+        serializedVersion: 2
+        x: 3852
+        y: 2595
+        width: 429
+        height: 539
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2c0eb8888a0860830800000000000000
+      internalID: 4037055577317957826
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_34
+      rect:
+        serializedVersion: 2
+        x: 4491
+        y: 2595
+        width: 430
+        height: 536
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b1a89e97f1fe03280800000000000000
+      internalID: -9065483131428435429
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_35
+      rect:
+        serializedVersion: 2
+        x: 5131
+        y: 2595
+        width: 430
+        height: 536
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e32061e4c59b6c9a0800000000000000
+      internalID: -6213074829812825538
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_36
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 1955
+        width: 430
+        height: 543
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f62a8a2d41d0cff0800000000000000
+      internalID: -17784269153097999
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_37
+      rect:
+        serializedVersion: 2
+        x: 651
+        y: 1955
+        width: 430
+        height: 543
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0784d3778149985a0800000000000000
+      internalID: -6518516152841451408
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_38
+      rect:
+        serializedVersion: 2
+        x: 1291
+        y: 1955
+        width: 430
+        height: 543
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 16e758fdd7db87240800000000000000
+      internalID: 4789786552027151969
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_39
+      rect:
+        serializedVersion: 2
+        x: 1931
+        y: 1955
+        width: 430
+        height: 543
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 580b39481082f9240800000000000000
+      internalID: 4800599714784587909
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_40
+      rect:
+        serializedVersion: 2
+        x: 2572
+        y: 1955
+        width: 429
+        height: 543
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e1202d59ae47ba780800000000000000
+      internalID: -8670708106687020514
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_41
+      rect:
+        serializedVersion: 2
+        x: 3212
+        y: 1955
+        width: 429
+        height: 543
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d53258765d9b51610800000000000000
+      internalID: 1591382369561289565
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_42
+      rect:
+        serializedVersion: 2
+        x: 3854
+        y: 1955
+        width: 427
+        height: 543
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7d4e25b8d2874e890800000000000000
+      internalID: -7429681348248148777
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_43
+      rect:
+        serializedVersion: 2
+        x: 4494
+        y: 1955
+        width: 427
+        height: 543
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e707ab9e8fab21900800000000000000
+      internalID: 653790474158108798
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_44
+      rect:
+        serializedVersion: 2
+        x: 5134
+        y: 1955
+        width: 427
+        height: 542
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3523ac52f8cb067c0800000000000000
+      internalID: -4080053939397316013
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_45
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 1315
+        width: 416
+        height: 548
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8e38b173f195df430800000000000000
+      internalID: 3818306049683457000
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_46
+      rect:
+        serializedVersion: 2
+        x: 665
+        y: 1315
+        width: 416
+        height: 548
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 702e3e180cbeb19c0800000000000000
+      internalID: -3955308635669405177
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_47
+      rect:
+        serializedVersion: 2
+        x: 1317
+        y: 1315
+        width: 404
+        height: 554
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0904fb700788e6650800000000000000
+      internalID: 6228065349447663760
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_48
+      rect:
+        serializedVersion: 2
+        x: 1957
+        y: 1315
+        width: 404
+        height: 554
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b1dcf121737e3ee70800000000000000
+      internalID: 9143405892205530395
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_49
+      rect:
+        serializedVersion: 2
+        x: 2610
+        y: 1315
+        width: 391
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 995d9f1dde41c0010800000000000000
+      internalID: 1156322215989990809
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_50
+      rect:
+        serializedVersion: 2
+        x: 3250
+        y: 1315
+        width: 391
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8d115289eb9b8a8b0800000000000000
+      internalID: -5140654746395930152
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_51
+      rect:
+        serializedVersion: 2
+        x: 3923
+        y: 1315
+        width: 370
+        height: 558
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4539abf01402937d0800000000000000
+      internalID: -2938281818073689260
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_52
+      rect:
+        serializedVersion: 2
+        x: 4563
+        y: 1315
+        width: 370
+        height: 558
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e3b4cddc1f0502bb0800000000000000
+      internalID: -4962877789891179714
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_53
+      rect:
+        serializedVersion: 2
+        x: 5221
+        y: 1315
+        width: 376
+        height: 560
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e4d0175d1f19f95e0800000000000000
+      internalID: -1900640049872958130
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_54
+      rect:
+        serializedVersion: 2
+        x: 101
+        y: 675
+        width: 376
+        height: 560
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f593314748e5260d0800000000000000
+      internalID: -3431076043126785697
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_55
+      rect:
+        serializedVersion: 2
+        x: 781
+        y: 675
+        width: 348
+        height: 568
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cb3c3c2a9a451a280800000000000000
+      internalID: -9033846289971559492
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_56
+      rect:
+        serializedVersion: 2
+        x: 1421
+        y: 675
+        width: 348
+        height: 568
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dd00cbb9e83d7fb10800000000000000
+      internalID: 2015311967723192541
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_57
+      rect:
+        serializedVersion: 2
+        x: 2067
+        y: 675
+        width: 341
+        height: 570
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d63e45f71eacdc9b0800000000000000
+      internalID: -5058163736614476947
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_58
+      rect:
+        serializedVersion: 2
+        x: 2707
+        y: 675
+        width: 341
+        height: 570
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f62404f3e71a4ca0800000000000000
+      internalID: -6031982483090430221
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_59
+      rect:
+        serializedVersion: 2
+        x: 3351
+        y: 675
+        width: 337
+        height: 571
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 488024db63afc6f80800000000000000
+      internalID: -8111833715790706556
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_60
+      rect:
+        serializedVersion: 2
+        x: 3992
+        y: 675
+        width: 335
+        height: 571
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 12105a2dde9659380800000000000000
+      internalID: -8965143013048909535
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_61
+      rect:
+        serializedVersion: 2
+        x: 4632
+        y: 675
+        width: 335
+        height: 571
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3b13c389d189092d0800000000000000
+      internalID: -3273949676222795341
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_62
+      rect:
+        serializedVersion: 2
+        x: 5272
+        y: 675
+        width: 335
+        height: 571
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6a3b33552e4069090800000000000000
+      internalID: -8028223915602758746
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_63
+      rect:
+        serializedVersion: 2
+        x: 152
+        y: 35
+        width: 335
+        height: 571
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e6d3459ef60d6120800000000000000
+      internalID: 2408589066208794338
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_64
+      rect:
+        serializedVersion: 2
+        x: 791
+        y: 35
+        width: 336
+        height: 571
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 018015fda6562a000800000000000000
+      internalID: 45710455914694672
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_65
+      rect:
+        serializedVersion: 2
+        x: 1431
+        y: 35
+        width: 336
+        height: 571
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 38d2baa2be153f3c0800000000000000
+      internalID: -4327024746497888893
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ZombieIdle_66
+      rect:
+        serializedVersion: 2
+        x: 2071
+        y: 35
+        width: 336
+        height: 571
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8acdd91a5af8e3030800000000000000
+      internalID: 3476373903920454824
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      ZombieIdle_0: 1307261339070176888
+      ZombieIdle_1: 6861165980009449592
+      ZombieIdle_10: -4494689318202469545
+      ZombieIdle_11: -6725787519626402219
+      ZombieIdle_12: 1185545965976978201
+      ZombieIdle_13: 7975015833439653036
+      ZombieIdle_14: -3463325680782155235
+      ZombieIdle_15: -371363313960552637
+      ZombieIdle_16: 8904638510699233797
+      ZombieIdle_17: 1739704838144454057
+      ZombieIdle_18: -4640157328343726699
+      ZombieIdle_19: 7189224888314379303
+      ZombieIdle_2: 5753996667126049884
+      ZombieIdle_20: -8344400531296482952
+      ZombieIdle_21: -888640584185894439
+      ZombieIdle_22: 6643889763072611661
+      ZombieIdle_23: -918100275856125409
+      ZombieIdle_24: 2967720509230576405
+      ZombieIdle_25: -3212850301873045832
+      ZombieIdle_26: -49766222231342114
+      ZombieIdle_27: 7635429337722142858
+      ZombieIdle_28: -4477280247848051627
+      ZombieIdle_29: -6720612182589833133
+      ZombieIdle_3: 4479259917525997916
+      ZombieIdle_30: 6907424114669852037
+      ZombieIdle_31: -2106764747589806969
+      ZombieIdle_32: -6955741849941791141
+      ZombieIdle_33: 4037055577317957826
+      ZombieIdle_34: -9065483131428435429
+      ZombieIdle_35: -6213074829812825538
+      ZombieIdle_36: -17784269153097999
+      ZombieIdle_37: -6518516152841451408
+      ZombieIdle_38: 4789786552027151969
+      ZombieIdle_39: 4800599714784587909
+      ZombieIdle_4: 4791347545440075853
+      ZombieIdle_40: -8670708106687020514
+      ZombieIdle_41: 1591382369561289565
+      ZombieIdle_42: -7429681348248148777
+      ZombieIdle_43: 653790474158108798
+      ZombieIdle_44: -4080053939397316013
+      ZombieIdle_45: 3818306049683457000
+      ZombieIdle_46: -3955308635669405177
+      ZombieIdle_47: 6228065349447663760
+      ZombieIdle_48: 9143405892205530395
+      ZombieIdle_49: 1156322215989990809
+      ZombieIdle_5: 836320356344149201
+      ZombieIdle_50: -5140654746395930152
+      ZombieIdle_51: -2938281818073689260
+      ZombieIdle_52: -4962877789891179714
+      ZombieIdle_53: -1900640049872958130
+      ZombieIdle_54: -3431076043126785697
+      ZombieIdle_55: -9033846289971559492
+      ZombieIdle_56: 2015311967723192541
+      ZombieIdle_57: -5058163736614476947
+      ZombieIdle_58: -6031982483090430221
+      ZombieIdle_59: -8111833715790706556
+      ZombieIdle_6: -4415262307601637622
+      ZombieIdle_60: -8965143013048909535
+      ZombieIdle_61: -3273949676222795341
+      ZombieIdle_62: -8028223915602758746
+      ZombieIdle_63: 2408589066208794338
+      ZombieIdle_64: 45710455914694672
+      ZombieIdle_65: -4327024746497888893
+      ZombieIdle_66: 3476373903920454824
+      ZombieIdle_7: -709018972853211622
+      ZombieIdle_8: -8265785211211667170
+      ZombieIdle_9: 3544874867746675615
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

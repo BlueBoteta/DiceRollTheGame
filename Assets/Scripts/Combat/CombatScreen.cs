@@ -17,6 +17,23 @@ public class CombatScreen : MonoBehaviour
     // Combat panel (no border, no tilt — just the background art panel)
     RectTransform _combatPanel;
 
+    // Character animation
+    enum PlayerAnim { IdleEmpty, IdleArmed, AttackRanged, AttackMelee, Hit, Death }
+
+    Image     _playerImage;
+    Image     _weaponImage;
+    Sprite[]  _playerIdleEmptyFrames;
+    Sprite[]  _playerIdleArmedFrames;
+    Sprite[]  _playerAttackRangedFrames;
+    Sprite[]  _playerAttackMeleeFrames;
+    Sprite[]  _playerHitFrames;
+    Sprite[]  _playerDeathFrames;
+    Coroutine _playerAnimCo;
+
+    Image     _enemyImage;
+    Sprite[]  _enemyIdleFrames;
+    Coroutine _enemyIdleCo;
+
     // Combat UI refs
     RectTransform _playerIcon;
     RectTransform _enemyIcon;
@@ -162,6 +179,9 @@ public class CombatScreen : MonoBehaviour
         _canvas.gameObject.SetActive(true);
         _combatPanel.gameObject.SetActive(false);
         _introOverlay.gameObject.SetActive(true);
+        ReturnToIdle();
+        UpdateWeaponSprite();
+        StartEnemyIdleAnim();
         _introOverlayImg.color              = new Color(0f, 0f, 0f, 1f);
         _introText.color                    = new Color(0.88f, 0.15f, 0.15f, 0f);
         _introText.rectTransform.localScale = Vector3.one;
@@ -252,6 +272,7 @@ public class CombatScreen : MonoBehaviour
                 if (Inventory.Instance.Count("ammo") == 0)
                     Log("-- Ammo depleted.  Switching to melee. --");
             }
+            PlayPlayerAnim(pm.ammoCost > 0 ? PlayerAnim.AttackRanged : PlayerAnim.AttackMelee);
             yield return StartCoroutine(FlashAction(pm.flash, pm.color));
             yield return StartCoroutine(Punch(_playerIcon, new Vector2(55, 0)));
             RefreshBars();
@@ -278,6 +299,7 @@ public class CombatScreen : MonoBehaviour
                 ? "  (-" + edmg + " HP, " + blocked + " blocked)."
                 : "  (-" + edmg + " HP).";
             Log(enemyName + " " + em.log + dmgLine);
+            PlayPlayerAnim(PlayerStats.Instance.hp > 0 ? PlayerAnim.Hit : PlayerAnim.Death);
             yield return StartCoroutine(FlashAction(em.flash, em.color));
             yield return StartCoroutine(FlashAction(PlayerReaction(edmg), ReactionColor(edmg)));
             yield return StartCoroutine(Punch(_enemyIcon, new Vector2(-55, 0)));
@@ -451,6 +473,163 @@ public class CombatScreen : MonoBehaviour
 
     void Log(string msg) => _logText.text += msg + "\n";
 
+    // ── Character sprites & animation ────────────────────────────────────────
+
+    void LoadAllPlayerSprites()
+    {
+        _playerIdleEmptyFrames    = LoadSortedSprites("Combat/PlayerIdle");
+        _playerIdleArmedFrames    = LoadSortedSprites("Combat/PlayerIdleArmed");
+        _playerAttackRangedFrames = LoadSortedSprites("Combat/PlayerAttackRanged");
+        _playerAttackMeleeFrames  = LoadSortedSprites("Combat/PlayerAttackMelee");
+        _playerHitFrames          = LoadSortedSprites("Combat/PlayerHit");
+        _playerDeathFrames        = LoadSortedSprites("Combat/PlayerDeath");
+
+        // Set icon size from first idle frame aspect ratio
+        var first = _playerIdleEmptyFrames?[0];
+        if (first != null)
+        {
+            float aspect   = first.rect.height / first.rect.width;
+            float displayH = 170f;
+            _playerIcon.sizeDelta = new Vector2(displayH / aspect, displayH);
+            _playerIcon.pivot     = new Vector2(0.5f, 0f);
+        }
+
+        if (_playerImage != null && _playerIdleEmptyFrames?.Length > 0)
+            _playerImage.sprite = _playerIdleEmptyFrames[0];
+    }
+
+    static Sprite[] LoadSortedSprites(string resourcePath)
+    {
+        var sprites = Resources.LoadAll<Sprite>(resourcePath);
+        if (sprites == null || sprites.Length == 0) return null;
+        System.Array.Sort(sprites, (a, b) =>
+        {
+            int ai = int.Parse(a.name.Substring(a.name.LastIndexOf('_') + 1));
+            int bi = int.Parse(b.name.Substring(b.name.LastIndexOf('_') + 1));
+            return ai.CompareTo(bi);
+        });
+        return sprites;
+    }
+
+    void ReturnToIdle()
+    {
+        bool hasGun = PlayerEquipment.Instance?.Get(EquipSlot.Primary) != null;
+        PlayPlayerAnim(hasGun ? PlayerAnim.IdleArmed : PlayerAnim.IdleEmpty);
+    }
+
+    void PlayPlayerAnim(PlayerAnim state)
+    {
+        if (_playerAnimCo != null) StopCoroutine(_playerAnimCo);
+        _playerAnimCo = StartCoroutine(PlayerAnimRoutine(state));
+    }
+
+    IEnumerator PlayerAnimRoutine(PlayerAnim state)
+    {
+        Sprite[] frames = state switch
+        {
+            PlayerAnim.IdleArmed    => _playerIdleArmedFrames,
+            PlayerAnim.AttackRanged => _playerAttackRangedFrames,
+            PlayerAnim.AttackMelee  => _playerAttackMeleeFrames,
+            PlayerAnim.Hit          => _playerHitFrames,
+            PlayerAnim.Death        => _playerDeathFrames,
+            _                       => _playerIdleEmptyFrames,
+        };
+
+        if (frames == null || frames.Length == 0)
+        {
+            ReturnToIdle();
+            yield break;
+        }
+
+        bool loops        = state == PlayerAnim.IdleEmpty || state == PlayerAnim.IdleArmed;
+        bool freezeOnLast = state == PlayerAnim.Death;
+        int  frame        = 0;
+
+        do
+        {
+            if (_playerImage != null)
+                _playerImage.sprite = frames[frame % frames.Length];
+            frame++;
+            yield return new WaitForSeconds(1f / 12f);
+        }
+        while (loops || frame < frames.Length);
+
+        if (freezeOnLast)
+            _playerImage.sprite = frames[frames.Length - 1];
+        else if (!loops)
+            ReturnToIdle();
+    }
+
+    void UpdateWeaponSprite()
+    {
+        if (_weaponImage == null) return;
+        var primary = PlayerEquipment.Instance?.Get(EquipSlot.Primary);
+
+        // Only show weapon overlay for primary guns — melee weapons don't show at idle
+        string resPath = null;
+        if      (primary?.id == "pistol")  resPath = "Combat/WeaponPistol";
+        else if (primary?.id == "shotgun") resPath = "Combat/WeaponShotgun";
+
+        if (resPath != null)
+        {
+            var tex = Resources.Load<Texture2D>(resPath);
+            if (tex != null)
+            {
+                _weaponImage.sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
+                _weaponImage.rectTransform.sizeDelta = new Vector2(80f, 34f);
+                _weaponImage.enabled = true;
+            }
+        }
+        else
+        {
+            _weaponImage.enabled = false;
+        }
+    }
+
+    void LoadEnemySprites()
+    {
+        var sprites = Resources.LoadAll<Sprite>("Combat/ZombieIdle");
+        if (sprites == null || sprites.Length == 0) return;
+
+        // Sort numerically: ZombieIdle_0, ZombieIdle_1, ..., ZombieIdle_66
+        System.Array.Sort(sprites, (a, b) =>
+        {
+            int ai = int.Parse(a.name.Substring(a.name.LastIndexOf('_') + 1));
+            int bi = int.Parse(b.name.Substring(b.name.LastIndexOf('_') + 1));
+            return ai.CompareTo(bi);
+        });
+
+        _enemyIdleFrames = sprites;
+
+        // Fixed display size — frames have slight size variation, stretch to fill
+        _enemyIcon.sizeDelta = new Vector2(110f, 170f);
+        _enemyIcon.pivot     = new Vector2(0.5f, 0f);
+
+        if (_enemyImage != null)
+            _enemyImage.sprite = sprites[0];
+    }
+
+    void StartEnemyIdleAnim()
+    {
+        if (_enemyIdleCo != null) StopCoroutine(_enemyIdleCo);
+        if (_enemyIdleFrames != null && _enemyIdleFrames.Length > 0)
+            _enemyIdleCo = StartCoroutine(EnemyIdleLoop());
+    }
+
+    IEnumerator EnemyIdleLoop()
+    {
+        const float fps = 8f;
+        float interval = 1f / fps;
+        int frame = 0;
+        while (true)
+        {
+            if (_enemyImage != null)
+                _enemyImage.sprite = _enemyIdleFrames[frame % _enemyIdleFrames.Length];
+            frame++;
+            yield return new WaitForSeconds(interval);
+        }
+    }
+
     // ── UI Construction ───────────────────────────────────────────────────────
 
     void BuildUI()
@@ -482,6 +661,8 @@ public class CombatScreen : MonoBehaviour
         else bgImg.color = new Color(0.04f, 0.07f, 0.10f);
 
         BuildCombatUI(_combatPanel);
+        LoadAllPlayerSprites();
+        LoadEnemySprites();
 
         // Intro overlay — full black screen, rendered on top
         _introOverlay = Make("IntroOverlay", canvasGO.transform);
@@ -566,31 +747,6 @@ public class CombatScreen : MonoBehaviour
         _enemyHpText.font      = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
 
         // ══════════════════════════════════════════════════════════════════════
-        //  BATTLEFIELD  —  player icon (left) | flash (center) | enemy (right)
-        //  y: 40–260
-        // ══════════════════════════════════════════════════════════════════════
-
-        // Action flash — center stage
-        var actionRT = CenterRect("ActionText", p, new Vector2(0f, 180f), new Vector2(680f, 96f));
-        _actionText           = actionRT.gameObject.AddComponent<Text>();
-        _actionText.text      = "";
-        _actionText.fontSize  = 56;
-        _actionText.fontStyle = FontStyle.Bold;
-        _actionText.alignment = TextAnchor.MiddleCenter;
-        _actionText.color     = Color.clear;
-        _actionText.font      = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-
-        // Player icon — left
-        var pIconRT = CenterRect("PlayerIcon", p, new Vector2(-450f, 110f), new Vector2(130f, 130f));
-        pIconRT.gameObject.AddComponent<Image>().color = new Color(1f, 0.85f, 0.12f, 0.78f);
-        _playerIcon = pIconRT;
-
-        // Enemy icon — right
-        var eIconRT = CenterRect("EnemyIcon", p, new Vector2(450f, 110f), new Vector2(130f, 130f));
-        eIconRT.gameObject.AddComponent<Image>().color = new Color(0.82f, 0.15f, 0.15f, 0.78f);
-        _enemyIcon = eIconRT;
-
-        // ══════════════════════════════════════════════════════════════════════
         //  DIVIDER
         // ══════════════════════════════════════════════════════════════════════
         MakeDivider(p, new Vector2(0f, -18f), 1220f, new Color(0.50f, 0.08f, 0.08f, 0.70f));
@@ -652,6 +808,68 @@ public class CombatScreen : MonoBehaviour
         _exitBtn.onClick.AddListener(() => _exitPressed = true);
         AddText(Make("ExitLbl", exitRT), "EXIT", 20, FontStyle.Bold, Color.white, TextAnchor.MiddleCenter)
             .rectTransform.anchoredPosition = Vector2.zero;
+
+        // ══════════════════════════════════════════════════════════════════════
+        //  CHARACTERS + ACTION FLASH — created last so they draw on top of log
+        //  Ground y = -230  (bottom strip of the battlefield)
+        // ══════════════════════════════════════════════════════════════════════
+        const float groundY = -275f;
+
+        // Action flash — center battlefield
+        var actionRT = CenterRect("ActionText", p, new Vector2(0f, 80f), new Vector2(680f, 96f));
+        _actionText           = actionRT.gameObject.AddComponent<Text>();
+        _actionText.text      = "";
+        _actionText.fontSize  = 56;
+        _actionText.fontStyle = FontStyle.Bold;
+        _actionText.alignment = TextAnchor.MiddleCenter;
+        _actionText.color     = Color.clear;
+        _actionText.font      = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+
+        // Player shadow — wide flat ellipse flush with ground, centered under feet
+        var pShadowRT = Make("PlayerShadow", p);
+        pShadowRT.anchorMin = pShadowRT.anchorMax = pShadowRT.pivot = new Vector2(0.5f, 0.5f);
+        pShadowRT.anchoredPosition = new Vector2(-190f, groundY + 6f);
+        pShadowRT.sizeDelta        = new Vector2(95f, 18f);
+        pShadowRT.gameObject.AddComponent<Image>().color = new Color(0f, 0f, 0f, 0.55f);
+
+        // Player icon — bottom-center pivot so feet sit exactly on groundY
+        var pIconRT = Make("PlayerIcon", p);
+        pIconRT.anchorMin = pIconRT.anchorMax = new Vector2(0.5f, 0.5f);
+        pIconRT.pivot            = new Vector2(0.5f, 0f);
+        pIconRT.anchoredPosition = new Vector2(-190f, groundY);
+        pIconRT.sizeDelta        = new Vector2(110f, 165f);
+        _playerImage              = pIconRT.gameObject.AddComponent<Image>();
+        _playerImage.color        = Color.white;
+        _playerImage.preserveAspect = false;
+        _playerIcon = pIconRT;
+
+        // Weapon sprite overlay — sits in the character's right hand (arm/chest area)
+        var wepRT = Make("WeaponOverlay", pIconRT);
+        wepRT.anchorMin = wepRT.anchorMax = wepRT.pivot = new Vector2(0.5f, 0.5f);
+        wepRT.anchoredPosition = new Vector2(22f, 0f);    // arm/hand height: anchor=center(0,85), +0 = y=85 = 50% of char
+        wepRT.sizeDelta        = new Vector2(80f, 34f);
+        _weaponImage              = wepRT.gameObject.AddComponent<Image>();
+        _weaponImage.preserveAspect = true;
+        _weaponImage.enabled      = false;
+
+        // Enemy shadow — wide flat ellipse flush with ground, centered under feet
+        var eShadowRT = Make("EnemyShadow", p);
+        eShadowRT.anchorMin = eShadowRT.anchorMax = eShadowRT.pivot = new Vector2(0.5f, 0.5f);
+        eShadowRT.anchoredPosition = new Vector2(190f, groundY + 6f);
+        eShadowRT.sizeDelta        = new Vector2(95f, 18f);
+        eShadowRT.gameObject.AddComponent<Image>().color = new Color(0f, 0f, 0f, 0.55f);
+
+        // Enemy icon — flipped to face left (toward player)
+        var eIconRT = Make("EnemyIcon", p);
+        eIconRT.anchorMin = eIconRT.anchorMax = new Vector2(0.5f, 0.5f);
+        eIconRT.pivot            = new Vector2(0.5f, 0f);
+        eIconRT.anchoredPosition = new Vector2(190f, groundY);
+        eIconRT.sizeDelta        = new Vector2(110f, 150f);
+        _enemyImage               = eIconRT.gameObject.AddComponent<Image>();
+        _enemyImage.color         = Color.white;
+        _enemyImage.preserveAspect = false;
+        eIconRT.localScale        = new Vector3(-1f, 1f, 1f);
+        _enemyIcon = eIconRT;
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
